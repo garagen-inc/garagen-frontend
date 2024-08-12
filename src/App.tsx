@@ -1,6 +1,6 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
-import { Login } from "./screens/login/Login"
-import { Home } from "./screens/home/Home"
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Login } from "./screens/login/Login";
+import { Home } from "./screens/home/Home";
 
 const router = createBrowserRouter([
   {
@@ -11,10 +11,10 @@ const router = createBrowserRouter([
     path: "/login",
     element: <Login />,
   },
-])
+]);
 
 function App() {
-  return <RouterProvider router={router} />
+  return <RouterProvider router={router} />;
 }
 
-export default App
+export default App;

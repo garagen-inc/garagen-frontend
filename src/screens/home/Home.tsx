@@ -1,5 +1,10 @@
 import React from "react"
+import Navbar from "../shared_components/Navbar"
 
 export function Home() {
-  return <div>Home</div>
+  return (
+  <>
+    <Navbar />
+  </>
+)
 }
