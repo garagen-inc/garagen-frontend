@@ -1,14 +1,16 @@
 import React from "react";
 import UserIcon from "../shared_components/shared_assets/user.svg";
 import GarageIcon from "../shared_components/shared_assets/garage.svg";
-import { FormLogin } from "./assets/FormLogin";
 import CustomButton from "./assets/CustomButton";
 import BasePageLayout from "./assets/BasePage";
-export function Login() {
+import FormRegisterGarage from "./assets/FormRegisterGarage";
+import FormRegisterUser from "./assets/FormRegisterUser";
+export function Register() {
   const buttons = (
     <>
       <CustomButton
-        buttonText="Cadastrar conta convencional"
+        redirectTo="login"
+        buttonText="Logar-se"
         imgSrc={UserIcon}
         imgAlt="Ícone de usuário"
         buttonColor="bg-gg-robin-egg-blue"
@@ -16,6 +18,7 @@ export function Login() {
         textColor="text-black"
       />
       <CustomButton
+        redirectTo="register"
         buttonText="Cadastrar conta administrativa"
         imgSrc={GarageIcon}
         imgAlt="Ícone de garagem"
@@ -27,8 +30,8 @@ export function Login() {
   );
   return (
     <BasePageLayout
-      mdFlexOrientation="md:flex-row"
-      formComponent={<FormLogin />}
+      mdFlexOrientation="md:flex-row-reverse"
+      formComponent={<FormRegisterUser />}
       buttons={buttons}
     />
   );
