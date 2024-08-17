@@ -3,9 +3,8 @@ import UserIcon from "../shared_components/shared_assets/user.svg";
 import GarageIcon from "../shared_components/shared_assets/garage.svg";
 import CustomButton from "./assets/components/CustomButton";
 import BasePageLayout from "./assets/components/BasePage";
-import FormRegisterGarage from "./assets/FormRegisterGarage";
 import FormRegisterUser from "./assets/FormRegisterUser";
-export function Register() {
+export function RegisterUser() {
   const buttons = (
     <>
       <CustomButton
@@ -18,7 +17,7 @@ export function Register() {
         textColor="text-black"
       />
       <CustomButton
-        redirectTo="register"
+        redirectTo="registerworkshop"
         buttonText="Cadastrar conta administrativa"
         imgSrc={GarageIcon}
         imgAlt="Ícone de garagem"

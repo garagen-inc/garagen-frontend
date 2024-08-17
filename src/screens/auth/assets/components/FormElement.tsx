@@ -18,24 +18,6 @@ const FormElement: React.FC<CustomFieldProps> = ({
   value = "",
 }) => {
   // Se onChange e value são fornecidos, renderiza o input controlado
-  if (onChange !== undefined) {
-    return (
-      <div className="py-1">
-        <span className="mb-2 text-md">{span}</span>
-        <input
-          type={type}
-          name={nameid}
-          id={nameid}
-          onChange={onChange} // Aplicando o onChange
-          value={value} // Aplicando o value
-          className="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
-          {...(isRequired ? { required: true } : {})}
-        />
-      </div>
-    );
-  }
-
-  // Se onChange não é fornecido, renderiza o input não controlado
   return (
     <div className="py-1">
       <span className="mb-2 text-md">{span}</span>
@@ -43,11 +25,12 @@ const FormElement: React.FC<CustomFieldProps> = ({
         type={type}
         name={nameid}
         id={nameid}
+        onChange={onChange} // Aplicando o onChange
+        value={value} // Aplicando o value
         className="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
         {...(isRequired ? { required: true } : {})}
       />
     </div>
   );
 };
-
 export default FormElement;
