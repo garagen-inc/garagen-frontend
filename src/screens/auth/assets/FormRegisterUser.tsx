@@ -1,56 +1,45 @@
-import React from "react";
-import { useState } from "react";
-import FormElement from "./FormElement";
-export const FormRegisterUser: React.FC = () => {
-  // State para armazenar a mensagem de erro
-  const [error, setError] = useState<string | null>(null);
+import React, { useState } from "react";
+import FormElement from "./components/FormElement";
+import { handleFormSubmit, validateEmail } from "./functions/submitHandler";
 
-  // Função para validar o e-mail
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+export const FormRegisterUser: React.FC = () => {
+  const [error, setError] = useState<string | null>(null);
+  const [cpf, setCpf] = useState<string>("");
+  const [formValues, setFormValues] = useState({
+    email: "",
+    password: "",
+    username: "",
+    surname: "",
+    confirmPassword: "",
+    cpf: "",
+  });
+
+  const mascaraCPF = (valor: string) => {
+    valor = valor.replace(/\D/g, ""); // Remove caracteres não numéricos
+    if (valor.length > 11) valor = valor.slice(0, 11); // Limita o tamanho a 11 dígitos
+    valor = valor.replace(/(\d{3})(\d)/, "$1.$2"); // Adiciona o ponto
+    valor = valor.replace(/(\d{3})(\d)/, "$1.$2"); // Adiciona o segundo ponto
+    valor = valor.replace(/(\d{3})(\d{1,2})$/, "$1-$2"); // Adiciona o traço
+    return valor;
+  };
+
+  // Atualiza o estado do valor do formulário
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+    if (name === "cpf") {
+      setCpf(mascaraCPF(value));
+    }
   };
 
   // Função para lidar com o envio do formulário
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    // Impede o comportamento padrão do navegador de enviar o formulário e recarregar a página
-    event.preventDefault();
-
-    // Obtém o formulário que disparou o evento
-    const form = event.currentTarget;
-
-    // Obtém os valores dos campos de entrada do formulário
-    const email = form.email.value;
-    const password = form.password.value;
-    const username = form.username;
-    const surname = form.surname.value;
-    const confirmPassword = form.confirmPassword.value;
-
-    if (!username || !surname) {
-      setError("Por favor, insira seu nome completo.");
-      return;
-    }
-
-    if (!validateEmail(email)) {
-      setError("Por favor, insira um e-mail válido.");
-      return;
-    }
-
-    if (!password) {
-      setError("Por favor, insira sua senha.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Senhas não coincidem.");
-      return;
-    }
-
-    setError(null);
-
-    //TODO envio do formulário.
-    console.log("Formulário enviado com sucesso!");
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    handleFormSubmit(event, setError, formValues);
   };
+
   return (
     <>
       <div className="flex flex-col justify-center p-8 md:p-14 w-full md:w-1/2">
@@ -63,39 +52,57 @@ export const FormRegisterUser: React.FC = () => {
             {error}
           </div>
         )}
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={onSubmit}>
           <div className="flex flex-row gap-4">
             <FormElement
               isRequired={true}
               nameid="username"
               span="Nome"
               type="text"
-            ></FormElement>
+              value={formValues.username}
+              onChange={handleChange}
+            />
             <FormElement
               isRequired={true}
               nameid="surname"
               span="Sobrenome"
               type="text"
-            ></FormElement>
+              value={formValues.surname}
+              onChange={handleChange}
+            />
           </div>
+          <FormElement
+            isRequired={true}
+            nameid="cpf"
+            span="CPF (apenas números)"
+            type="text"
+            value={cpf}
+            onChange={handleChange}
+          />
           <FormElement
             isRequired={true}
             nameid="email"
             span="Email"
             type="text"
-          ></FormElement>
+            value={formValues.email}
+            onChange={handleChange}
+          />
           <FormElement
             isRequired={true}
             nameid="password"
             span="Senha"
             type="password"
-          ></FormElement>
+            value={formValues.password}
+            onChange={handleChange}
+          />
           <FormElement
             isRequired={true}
             nameid="confirmPassword"
             span="Confirme sua senha"
             type="password"
-          ></FormElement>
+            value={formValues.confirmPassword}
+            onChange={handleChange}
+          />
           <button
             type="submit"
             className="w-full bg-gg-rich-black text-white p-2 rounded-lg mb-6 transition-colors duration-200 ease-in-out hover:bg-gg-lavender-blush hover:text-black hover:border hover:border-gray-300"

@@ -1,55 +1,50 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
+import FormElement from "./components/FormElement";
+import { handleFormSubmit, validateEmail } from "./functions/submitHandler";
 
-export const FormRegisterGarage: React.FC = () => {
-  // State para armazenar a mensagem de erro
+export const FormRegisterUser: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
+  const [cpf, setCpf] = useState<string>("");
+  const [formValues, setFormValues] = useState({
+    email: "",
+    password: "",
+    username: "",
+    surname: "",
+    confirmPassword: "",
+    cpf: "",
+  });
 
-  // Função para validar o e-mail
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  const mascaraCPF = (valor: string) => {
+    valor = valor.replace(/\D/g, ""); // Remove caracteres não numéricos
+    if (valor.length > 11) valor = valor.slice(0, 11); // Limita o tamanho a 11 dígitos
+    valor = valor.replace(/(\d{3})(\d)/, "$1.$2"); // Adiciona o ponto
+    valor = valor.replace(/(\d{3})(\d)/, "$1.$2"); // Adiciona o segundo ponto
+    valor = valor.replace(/(\d{3})(\d{1,2})$/, "$1-$2"); // Adiciona o traço
+    return valor;
+  };
+
+  // Atualiza o estado do valor do formulário
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+    if (name === "cpf") {
+      setCpf(mascaraCPF(value));
+    }
   };
 
   // Função para lidar com o envio do formulário
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    // Impede o comportamento padrão do navegador de enviar o formulário e recarregar a página
-    event.preventDefault();
-
-    // Obtém o formulário que disparou o evento
-    const form = event.currentTarget;
-
-    // Obtém os valores dos campos de entrada do formulário
-    const email = form.email.value;
-    const password = form.password.value;
-    const username = form.username;
-    const surname = form.surname.value;
-
-    if (!validateEmail(email)) {
-      setError("Por favor, insira um e-mail válido.");
-      return;
-    }
-
-    if (!password) {
-      setError("Por favor, insira sua senha.");
-      return;
-    }
-
-    if (!username || !surname) {
-      setError("Por favor, insira seu nome completo.");
-      return;
-    }
-
-    setError(null);
-
-    //TODO envio do formulário.
-    console.log("Formulário enviado com sucesso!");
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    handleFormSubmit(event, setError, formValues);
   };
+
   return (
     <>
       <div className="flex flex-col justify-center p-8 md:p-14 w-full md:w-1/2">
         <span className="mb-3 text-4xl font-bold">
-          É um prazer fazermos negócios
+          É um prazer fazer negócios
         </span>
         <span className="font-light text-gray-400 mb-8">
           Insira seus dados para continuar:
@@ -59,89 +54,57 @@ export const FormRegisterGarage: React.FC = () => {
             {error}
           </div>
         )}
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={onSubmit}>
           <div className="flex flex-row gap-4">
-            <div className="py-1">
-              <span className="mb-2 text-md">Nome</span>
-              <input
-                type="text"
-                className="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
-                name="username"
-                id="username"
-                required
-              />
-            </div>
-            <div className="py-1">
-              <span className="mb-2 text-md">Sobrenome</span>
-              <input
-                type="text"
-                className="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
-                name="surname"
-                id="surname"
-                required
-              />
-            </div>
-          </div>
-          <div className="py-1">
-            <span className="mb-2 text-md">CPF</span>
-            <input
+            <FormElement
+              isRequired={true}
+              nameid="username"
+              span="Nome"
               type="text"
-              className="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
-              name="cpf"
-              id="cpf"
-              required
+              value={formValues.username}
+              onChange={handleChange}
             />
-          </div>
-          <div className="py-1">
-            <span className="mb-2 text-md">Email</span>
-            <input
+            <FormElement
+              isRequired={true}
+              nameid="surname"
+              span="Sobrenome"
               type="text"
-              name="email"
-              id="email"
-              className="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
-              required
+              value={formValues.surname}
+              onChange={handleChange}
             />
           </div>
-          <div className="py-1">
-            <span className="mb-2 text-md">Senha</span>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              className="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
-              required
-            />
-          </div>
-          <div className="py-1">
-            <span className="mb-2 text-md">Senha</span>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              className="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
-              required
-            />
-          </div>
-          <div className="py-1">
-            <span className="mb-2 text-md">Senha</span>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              className="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
-              required
-            />
-          </div>
-          <div className="py-1">
-            <span className="mb-2 text-md">Senha</span>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              className="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"
-              required
-            />
-          </div>
+          <FormElement
+            isRequired={true}
+            nameid="cpf"
+            span="CPF (apenas números)"
+            type="text"
+            value={cpf}
+            onChange={handleChange}
+          />
+          <FormElement
+            isRequired={true}
+            nameid="email"
+            span="Email"
+            type="text"
+            value={formValues.email}
+            onChange={handleChange}
+          />
+          <FormElement
+            isRequired={true}
+            nameid="password"
+            span="Senha"
+            type="password"
+            value={formValues.password}
+            onChange={handleChange}
+          />
+          <FormElement
+            isRequired={true}
+            nameid="confirmPassword"
+            span="Confirme sua senha"
+            type="password"
+            value={formValues.confirmPassword}
+            onChange={handleChange}
+          />
           <button
             type="submit"
             className="w-full bg-gg-rich-black text-white p-2 rounded-lg mb-6 transition-colors duration-200 ease-in-out hover:bg-gg-lavender-blush hover:text-black hover:border hover:border-gray-300"
@@ -154,4 +117,4 @@ export const FormRegisterGarage: React.FC = () => {
   );
 };
 
-export default FormRegisterGarage;
+export default FormRegisterUser;

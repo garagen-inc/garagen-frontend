@@ -1,8 +1,8 @@
 import React from "react";
 import UserIcon from "../shared_components/shared_assets/user.svg";
 import GarageIcon from "../shared_components/shared_assets/garage.svg";
-import CustomButton from "./assets/CustomButton";
-import BasePageLayout from "./assets/BasePage";
+import CustomButton from "./assets/components/CustomButton";
+import BasePageLayout from "./assets/components/BasePage";
 import FormRegisterGarage from "./assets/FormRegisterGarage";
 import FormRegisterUser from "./assets/FormRegisterUser";
 export function Register() {
@@ -31,6 +31,7 @@ export function Register() {
   return (
     <BasePageLayout
       mdFlexOrientation="md:flex-row-reverse"
+      fadeFrom="from-gg-cinnabar"
       formComponent={<FormRegisterUser />}
       buttons={buttons}
     />

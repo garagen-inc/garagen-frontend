@@ -4,12 +4,16 @@ interface BasePageLayoutProps {
   formComponent: React.ReactNode;
   buttons: React.ReactNode;
   mdFlexOrientation?: string;
+  fadeFrom?: string;
+  fadeTo?: string;
 }
 
 export const BasePageLayout: React.FC<BasePageLayoutProps> = ({
   formComponent,
   buttons,
   mdFlexOrientation = "md:flex-row",
+  fadeFrom = "from-gg-robin-egg-blue",
+  fadeTo = "to-gg-sunglow",
 }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gg-rich-black overflow-hidden">
@@ -22,7 +26,9 @@ export const BasePageLayout: React.FC<BasePageLayoutProps> = ({
       >
         {formComponent}
 
-        <div className="relative flex-col w-full md:w-1/2 flex items-center p-12 justify-center inset-0 bg-gradient-to-b from-gg-robin-egg-blue to-gg-sunglow">
+        <div
+          className={`relative flex-col w-full md:w-1/2 flex items-center p-12 justify-center inset-0 bg-gradient-to-b ${fadeFrom} ${fadeTo} `}
+        >
           <div>
             <span className="lg:text-4xl font-bold text-3xl text-gg-lavender-blush mb-4">
               Primeira vez aqui?
