@@ -1,4 +1,3 @@
-import { ChangeEvent } from "react";
 import validateCPF from "./validatorCPF";
 
 interface FormValues {

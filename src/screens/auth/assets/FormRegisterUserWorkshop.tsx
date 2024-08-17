@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import UserForm from "./components/UserForm";
 import CompanyForm from "./components/CompanyForm";
-import { handleFormSubmit } from "./functions/submitHandler";
+import { handleFormSubmit } from "./functions/handleFormSubmit";
 import maskCPF from "./functions/maskCPF";
 
 export const FormRegisterUserWorkshop: React.FC = () => {
@@ -42,20 +42,29 @@ export const FormRegisterUserWorkshop: React.FC = () => {
     handleFormSubmit(event, setError, formValues);
   };
 
-  const handleContinue = () => {
-    // Use `handleFormSubmit` to validate the form
-    if (validateUserForm()) {
-      setIsUserForm(false); // Switch to company form
-    }
-  };
-
   const validateUserForm = () => {
-    // Use the existing handleFormSubmit function to validate the form
+    // Temporarily store the error message
+    let validationError = null;
+
+    // Create a dummy event to pass to handleFormSubmit
     const event = {
       preventDefault: () => {},
     } as React.FormEvent<HTMLFormElement>;
-    handleFormSubmit(event, setError, formValues);
-    return !error; // Return true if no errors
+
+    // Call handleFormSubmit and capture any errors
+    handleFormSubmit(event, (error) => (validationError = error), formValues);
+
+    // Set the local error state
+    setError(validationError);
+
+    // Return true if no errors
+    return !validationError;
+  };
+
+  const handleContinue = () => {
+    if (validateUserForm()) {
+      setIsUserForm(false); // Switch to company form
+    }
   };
 
   const handleCompanySubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -80,11 +89,6 @@ export const FormRegisterUserWorkshop: React.FC = () => {
           ? "Insira seus dados para continuar:"
           : "Insira os dados da empresa para continuar:"}
       </span>
-      {error && (
-        <div className="mb-4 p-2 bg-red-100 text-red-700 border border-red-300 rounded-md">
-          {error}
-        </div>
-      )}
       {isUserForm ? (
         <UserForm
           formValues={formValues}

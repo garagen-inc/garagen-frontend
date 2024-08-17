@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import UserForm from "./components/UserForm";
-import { handleFormSubmit } from "./functions/submitHandler";
+import { handleFormSubmit } from "./functions/handleFormSubmit";
 import maskCPF from "./functions/maskCPF";
 
 export const FormRegisterUser: React.FC = () => {
