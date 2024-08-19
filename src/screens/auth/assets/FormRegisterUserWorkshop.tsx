@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import UserForm from "./components/UserForm";
 import CompanyForm from "./components/CompanyForm";
 import { handleFormSubmit } from "./functions/handleFormSubmit";
-import maskCPF from "./functions/maskCPF";
+import { maskCPF, maskPhoneNumber } from "./functions/masks";
 
 export const FormRegisterUserWorkshop: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
@@ -14,14 +14,14 @@ export const FormRegisterUserWorkshop: React.FC = () => {
     surname: "",
     confirmPassword: "",
     cpf: "",
-
+    phone: "",
     // Company
     companyName: "",
     address: "",
     number: "",
     postalCode: "",
   });
-  const [isUserForm, setIsUserForm] = useState(true); // State to control which form to show
+  const [isUserForm, setIsUserForm] = useState(true); // Controla qual formulário exibir
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,40 +35,52 @@ export const FormRegisterUserWorkshop: React.FC = () => {
         cpf: maskCPF(value),
       }));
     }
+    if (name === "phone") {
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        phone: maskPhoneNumber(value),
+      }));
+    }
   };
 
-  const handleUserSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    handleFormSubmit(event, setError, formValues);
-  };
-
-  const validateUserForm = () => {
-    // Temporarily store the error message
-    let validationError = null;
-
-    // Create a dummy event to pass to handleFormSubmit
+  const validateUserForm = async (): Promise<boolean> => {
     const event = {
       preventDefault: () => {},
     } as React.FormEvent<HTMLFormElement>;
 
-    // Call handleFormSubmit and capture any errors
-    handleFormSubmit(event, (error) => (validationError = error), formValues);
+    const resultError = await handleFormSubmit(
+      event,
+      setError,
+      formValues,
+      true,
+      true
+    );
+    console.log("Estado do erro após validação:", resultError);
 
-    // Set the local error state
-    setError(validationError);
-
-    // Return true if no errors
-    return !validationError;
+    setError(resultError);
+    return resultError === null; // Retorna verdadeiro se não houver erro
   };
 
-  const handleContinue = () => {
-    if (validateUserForm()) {
-      setIsUserForm(false); // Switch to company form
+  const handleUserSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const isValid = await validateUserForm();
+    if (isValid) {
+      setIsUserForm(false); // Muda para o formulário de empresa
     }
   };
 
-  const handleCompanySubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    handleFormSubmit(event, setError, formValues, false); // Update `handleFormSubmit` to handle company form as needed
+  const handleContinue = async () => {
+    const isValid = await validateUserForm();
+    if (isValid) {
+      setIsUserForm(false); // Muda para o formulário de empresa
+    }
+  };
+
+  const handleCompanySubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+    await handleFormSubmit(event, setError, formValues, false);
     if (!error) {
       console.log("Formulário de empresa enviado com sucesso!");
     }
@@ -76,8 +88,15 @@ export const FormRegisterUserWorkshop: React.FC = () => {
 
   const switchForm = () => {
     setIsUserForm((prev) => !prev);
-    setError(null); // Clear errors when switching forms
+    setError(null); // Limpa erros ao alternar os formulários
   };
+
+  // UseEffect para verificação do erro
+  useEffect(() => {
+    if (error) {
+      console.log("Erro atualizado:", error);
+    }
+  }, [error]);
 
   return (
     <div className="flex flex-col justify-center p-8 md:p-14 w-full md:w-1/2">
@@ -95,8 +114,8 @@ export const FormRegisterUserWorkshop: React.FC = () => {
           onChange={handleChange}
           onSubmit={handleUserSubmit}
           error={error}
-          showSubmitButton={false} // Hide default submit button
-          onContinue={handleContinue} // Use the handleContinue function
+          showSubmitButton={false} // Oculta o botão de submit padrão
+          onContinue={handleContinue} // Usa a função handleContinue
         />
       ) : (
         <CompanyForm

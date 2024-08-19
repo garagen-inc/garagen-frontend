@@ -1,5 +1,10 @@
 import validateCPF from "./validatorCPF";
 
+const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
 interface FormValues {
   email: string;
   password: string;
@@ -7,18 +12,22 @@ interface FormValues {
   surname: string;
   confirmPassword: string;
   cpf: string;
-  companyName?: string; // Adicione campos opcionais para o formulário de empresa
+  phone: string;
+
+  companyName?: string;
   address?: string;
   number?: string;
   postalCode?: string;
 }
 
-export const handleFormSubmit = (
+export const handleFormSubmit = async (
   event: React.FormEvent<HTMLFormElement>,
   setError: React.Dispatch<React.SetStateAction<string | null>>,
   formValues: FormValues,
-  isUserForm: boolean = true // Adicione um parâmetro para distinguir entre os formulários
-) => {
+  isUserForm: boolean = true,
+  awaitRegisterCompany: boolean = false
+): Promise<string | null> => {
+  // Modificado para retornar o erro
   event.preventDefault();
 
   if (isUserForm) {
@@ -26,47 +35,58 @@ export const handleFormSubmit = (
       formValues;
 
     if (!username || !surname) {
-      setError("Por favor, insira seu nome completo.");
-      return;
+      return "Por favor, insira seu nome completo.";
     }
 
     if (!validateCPF(cpf)) {
-      setError("CPF inválido.");
-      return;
+      return "CPF inválido.";
     }
 
     if (!validateEmail(email)) {
-      setError("Por favor, insira um e-mail válido.");
-      return;
+      return "Por favor, insira um e-mail válido.";
     }
 
     if (!password) {
-      setError("Por favor, insira sua senha.");
-      return;
+      return "Por favor, insira sua senha.";
     }
 
     if (password !== confirmPassword) {
-      setError("Senhas não coincidem.");
-      return;
+      return "Senhas não coincidem.";
     }
 
-    setError(null);
-    console.log("Formulário de usuário enviado com sucesso!");
+    if (awaitRegisterCompany === false) {
+      try {
+        await postUser(formValues); // Envia o formulário do usuário
+        console.log("Usuário registrado com sucesso!");
+        return null;
+      } catch (error) {
+        return "Erro ao registrar o usuário.";
+      }
+    } else {
+      return null;
+    }
   } else {
-    // Validação para o formulário de empresa (caso haja)
     const { companyName, address, number, postalCode } = formValues;
 
     if (!companyName || !address || !number || !postalCode) {
-      setError("Por favor, preencha todos os campos da empresa.");
-      return;
+      return "Por favor, preencha todos os campos da empresa.";
     }
 
-    setError(null);
-    console.log("Formulário de empresa enviado com sucesso!");
+    try {
+      await postCompany({ companyName, address, number, postalCode });
+      console.log("Empresa registrada com sucesso!");
+      return null;
+    } catch (error) {
+      return "Erro ao registrar a empresa.";
+    }
   }
 };
 
-export const validateEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+// Funções fictícias para enviar dados
+const postUser = async (userData: FormValues) => {
+  // Implementar a lógica para enviar o registro do usuário
+};
+
+const postCompany = async (companyData: Partial<FormValues>) => {
+  // Implementar a lógica para enviar o registro da empresa
 };

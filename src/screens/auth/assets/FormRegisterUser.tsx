@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import UserForm from "./components/UserForm";
 import { handleFormSubmit } from "./functions/handleFormSubmit";
-import maskCPF from "./functions/maskCPF";
+import { maskCPF, maskPhoneNumber } from "./functions/masks";
 
 export const FormRegisterUser: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
@@ -12,6 +12,7 @@ export const FormRegisterUser: React.FC = () => {
     surname: "",
     confirmPassword: "",
     cpf: "",
+    phone: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,6 +25,12 @@ export const FormRegisterUser: React.FC = () => {
       setFormValues((prevValues) => ({
         ...prevValues,
         cpf: maskCPF(value),
+      }));
+    }
+    if (name === "phone") {
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        phone: maskPhoneNumber(value),
       }));
     }
   };
