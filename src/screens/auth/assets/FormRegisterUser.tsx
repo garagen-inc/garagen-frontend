@@ -35,8 +35,11 @@ export const FormRegisterUser: React.FC = () => {
     }
   };
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    handleFormSubmit(event, setError, formValues);
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const resultError = await handleFormSubmit(event, setError, formValues);
+    if (resultError) {
+      setError(resultError);
+    }
   };
 
   return (
