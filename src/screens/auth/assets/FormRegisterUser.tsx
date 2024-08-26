@@ -3,6 +3,8 @@ import UserForm from "./components/UserForm";
 import { handleFormSubmit } from "./functions/handleFormSubmit";
 import { maskCPF, maskPhoneNumber } from "./functions/masks";
 
+const BASE_URL = "https://api.example.com"; // Definir url base
+
 export const FormRegisterUser: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [formValues, setFormValues] = useState({
@@ -36,7 +38,14 @@ export const FormRegisterUser: React.FC = () => {
   };
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    const resultError = await handleFormSubmit(event, setError, formValues);
+    const resultError = await handleFormSubmit(
+      event,
+      setError,
+      formValues,
+      true,
+      false,
+      BASE_URL
+    );
     if (resultError) {
       setError(resultError);
     }
