@@ -12,7 +12,7 @@ export function Login() {
         buttonText="Cadastrar conta convencional"
         imgSrc={UserIcon}
         imgAlt="Ícone de usuário"
-        buttonColor="bg-gg-robin-egg-blue"
+        buttonColor="bg-gg-lavender-blush"
         hoverColor="hover:bg-gg-sunglow"
         textColor="text-black"
       />
@@ -21,7 +21,7 @@ export function Login() {
         buttonText="Cadastrar conta administrativa"
         imgSrc={GarageIcon}
         imgAlt="Ícone de garagem"
-        buttonColor="bg-gg-robin-egg-blue"
+        buttonColor="bg-gg-lavender-blush"
         hoverColor="hover:bg-gg-sunglow"
         textColor="text-black"
       />

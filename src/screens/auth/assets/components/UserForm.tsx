@@ -64,6 +64,14 @@ const UserForm: React.FC<UserFormProps> = ({
       />
       <FormElement
         isRequired={true}
+        nameid="phone"
+        span="Número de telefone"
+        type="text"
+        value={formValues.phone}
+        onChange={onChange}
+      />
+      <FormElement
+        isRequired={true}
         nameid="email"
         span="Email"
         type="text"
@@ -86,14 +94,6 @@ const UserForm: React.FC<UserFormProps> = ({
         value={formValues.confirmPassword}
         onChange={onChange}
       />
-      <FormElement
-        isRequired={true}
-        nameid="phone"
-        span="Número de telefone"
-        type="text"
-        value={formValues.phone}
-        onChange={onChange}
-      />
       {showSubmitButton && (
         <button
           type="submit"
@@ -106,7 +106,7 @@ const UserForm: React.FC<UserFormProps> = ({
         <button
           type="button"
           onClick={onContinue}
-          className="w-full bg-blue-500 text-white p-2 rounded-lg mt-4 transition-colors duration-200 ease-in-out hover:bg-blue-600"
+          className="w-full bg-gg-lavender-blush border-solid p-2 rounded-lg mt-4 transition-colors duration-200 ease-in-out hover:bg-gg-rich-black hover:text-white"
         >
           Continuar
         </button>

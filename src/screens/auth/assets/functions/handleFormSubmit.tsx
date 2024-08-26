@@ -1,9 +1,22 @@
 import validateCPF from "./validatorCPF";
+import axios from "axios";
 
 const validateEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
+
+const api = axios.create({
+  baseURL: "https://api.example.com", // Base URL padrão
+});
+
+interface UserValues {
+  name: string;
+  password: string;
+  phone: string;
+  cpf: string;
+  email: string;
+}
 
 interface FormValues {
   email: string;
@@ -25,13 +38,14 @@ export const handleFormSubmit = async (
   setError: React.Dispatch<React.SetStateAction<string | null>>,
   formValues: FormValues,
   isUserForm: boolean = true,
-  awaitRegisterCompany: boolean = false
+  awaitRegisterCompany: boolean = false,
+  baseURL: string // Adiciona o parâmetro baseURL
 ): Promise<string | null> => {
   // Modificado para retornar o erro
   event.preventDefault();
 
   if (isUserForm) {
-    const { email, password, username, surname, confirmPassword, cpf } =
+    const { email, password, username, surname, confirmPassword, cpf, phone } =
       formValues;
 
     if (!username || !surname) {
@@ -40,6 +54,10 @@ export const handleFormSubmit = async (
 
     if (!validateCPF(cpf)) {
       return "CPF inválido.";
+    }
+
+    if (!phone) {
+      return "Por favor, insira seu telefone.";
     }
 
     if (!validateEmail(email)) {
@@ -55,8 +73,17 @@ export const handleFormSubmit = async (
     }
 
     if (awaitRegisterCompany === false) {
+      // Cria o objeto no formato esperado por postUser
+      const userData: UserValues = {
+        name: `${username} ${surname}`, // Nome completo no formato esperado
+        password,
+        phone,
+        cpf,
+        email,
+      };
+
       try {
-        await postUser(formValues); // Envia o formulário do usuário
+        await postUser(userData, baseURL); // Envia o formulário do usuário
         console.log("Usuário registrado com sucesso!");
         return null;
       } catch (error) {
@@ -66,15 +93,42 @@ export const handleFormSubmit = async (
       return null;
     }
   } else {
-    const { companyName, address, number, postalCode } = formValues;
+    const {
+      companyName,
+      address,
+      number,
+      postalCode,
+      email,
+      password,
+      username,
+      surname,
+      confirmPassword,
+      cpf,
+      phone,
+    } = formValues;
 
     if (!companyName || !address || !number || !postalCode) {
       return "Por favor, preencha todos os campos da empresa.";
     }
 
     try {
-      await postCompany({ companyName, address, number, postalCode });
-      console.log("Empresa registrada com sucesso!");
+      await postUserCompany(
+        {
+          email,
+          password,
+          username,
+          surname,
+          confirmPassword,
+          cpf,
+          phone,
+          companyName,
+          address,
+          number,
+          postalCode,
+        },
+        baseURL
+      );
+      console.log(formValues);
       return null;
     } catch (error) {
       return "Erro ao registrar a empresa.";
@@ -83,10 +137,13 @@ export const handleFormSubmit = async (
 };
 
 // Funções fictícias para enviar dados
-const postUser = async (userData: FormValues) => {
-  // Implementar a lógica para enviar o registro do usuário
+const postUser = async (userData: UserValues, baseURL: string) => {
+  await axios.post(`${baseURL}/users`, userData);
 };
 
-const postCompany = async (companyData: Partial<FormValues>) => {
-  // Implementar a lógica para enviar o registro da empresa
+const postUserCompany = async (
+  companyData: Partial<FormValues>,
+  baseURL: string
+) => {
+  await axios.post(`${baseURL}/companies`, companyData);
 };

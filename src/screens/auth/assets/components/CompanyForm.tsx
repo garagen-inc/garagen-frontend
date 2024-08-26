@@ -8,6 +8,8 @@ interface CompanyFormProps {
     address: string;
     number: string;
     postalCode: string;
+    city: string;
+    state: string;
   };
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
@@ -26,22 +28,42 @@ const CompanyForm: React.FC<CompanyFormProps> = ({
       value={formValues.companyName}
       onChange={onChange}
     />
-    <FormElement
-      isRequired={true}
-      nameid="address"
-      span="Logradouro"
-      type="text"
-      value={formValues.address}
-      onChange={onChange}
-    />
-    <FormElement
-      isRequired={true}
-      nameid="number"
-      span="Número"
-      type="text"
-      value={formValues.number}
-      onChange={onChange}
-    />
+    <div className="flex flex-row gap-4">
+      <FormElement
+        isRequired={true}
+        nameid="address"
+        span="Logradouro"
+        type="text"
+        value={formValues.address}
+        onChange={onChange}
+      />
+      <FormElement
+        isRequired={true}
+        nameid="number"
+        span="Número"
+        type="text"
+        value={formValues.number}
+        onChange={onChange}
+      />
+    </div>
+    <div className="flex flex-row gap-4">
+      <FormElement
+        isRequired={true}
+        nameid="city"
+        span="Cidade"
+        type="text"
+        value={formValues.address}
+        onChange={onChange}
+      />
+      <FormElement
+        isRequired={true}
+        nameid="state"
+        span="Estado"
+        type="text"
+        value={formValues.number}
+        onChange={onChange}
+      />
+    </div>
     <FormElement
       isRequired={true}
       nameid="postalCode"

@@ -4,6 +4,8 @@ import CompanyForm from "./components/CompanyForm";
 import { handleFormSubmit } from "./functions/handleFormSubmit";
 import { maskCPF, maskPhoneNumber } from "./functions/masks";
 
+const BASE_URL = "https://api.example.com"; // Definir url base
+
 export const FormRegisterUserWorkshop: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [formValues, setFormValues] = useState({
@@ -20,9 +22,10 @@ export const FormRegisterUserWorkshop: React.FC = () => {
     address: "",
     number: "",
     postalCode: "",
+    city: "",
+    state: "",
   });
   const [isUserForm, setIsUserForm] = useState(true); // Controla qual formulário exibir
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormValues((prevValues) => ({
@@ -53,7 +56,8 @@ export const FormRegisterUserWorkshop: React.FC = () => {
       setError,
       formValues,
       true,
-      true
+      true,
+      BASE_URL
     );
     console.log("Estado do erro após validação:", resultError);
 
@@ -80,7 +84,7 @@ export const FormRegisterUserWorkshop: React.FC = () => {
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
-    await handleFormSubmit(event, setError, formValues, false);
+    await handleFormSubmit(event, setError, formValues, false, false, BASE_URL);
     if (!error) {
       console.log("Formulário de empresa enviado com sucesso!");
     }

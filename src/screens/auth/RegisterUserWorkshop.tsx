@@ -11,7 +11,7 @@ export function RegisterUserWorkshop() {
         buttonText="Logar-se"
         imgSrc={UserIcon}
         imgAlt="Ícone de usuário"
-        buttonColor="bg-gg-robin-egg-blue"
+        buttonColor="bg-gg-lavender-blush"
         hoverColor="hover:bg-gg-sunglow"
         textColor="text-black"
       />
@@ -20,7 +20,7 @@ export function RegisterUserWorkshop() {
         buttonText="Cadastrar conta convencional"
         imgSrc={UserIcon}
         imgAlt="Ícone de usuário"
-        buttonColor="bg-gg-robin-egg-blue"
+        buttonColor="bg-gg-lavender-blush"
         hoverColor="hover:bg-gg-sunglow"
         textColor="text-black"
       />
