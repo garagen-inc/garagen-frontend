@@ -42,12 +42,15 @@ const Navbar = () => {
             ))}
           </ul> */}
           <div className="flex justify-center space-x-12 items-center font-bold">
-            <a href="#" className="py-2 px-8 rounded-full bg-gg-lavender-blush">
+            <a
+              href="#"
+              className="py-2 px-8 rounded-full bg-gg-lavender-blush hover:text-white hover:bg-gg-rich-black transition duration-200 ease-in-out"
+            >
               Login
             </a>
             <a
               href="#"
-              className="bg-gg-rich-black text-white whitespace-nowrap font-bold py-2 px-3 rounded-full"
+              className="bg-gg-rich-black text-white hover:text-black hover:bg-gg-lavender-blush whitespace-nowrap font-bold py-2 px-3 rounded-full transition duration-200 ease-in-out"
             >
               Criar Conta
             </a>
