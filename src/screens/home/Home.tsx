@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { WorkshopElement } from "./assets/components/WorkshopElement";
 import Navbar from "../shared_components/Navbar";
 import glass from "./assets/img/magnifying-glass.svg";
 import "./assets/home.css";
@@ -39,21 +40,10 @@ export function Home() {
             />
           </div>
         </div>
-
-        <div className="justify-center align-middle flex">
-          <div className="bg-slate-200 m-10 sm:w-1/2 md:w-1/3 flex flex-col rounded-lg shadow-xl overflow-hidden ">
-            <img src={workshop} alt=""></img>
-            <div className="flex justify-start flex-col">
-              <span className="font-bold m-5 text-lg">Lugar</span>
-              <span className="ml-5">Descrição</span>
-              <div className="flex justify-end">
-                <button className="bg-gg-rich-black flex gap-3 flex-row text-gg-sunglow p-4 mt-5 mb-5 rounded-tl-lg rounded-bl-lg">
-                  Verificar horários{" "}
-                  <img src={glass} alt="" className="w-5"></img>
-                </button>
-              </div>
-            </div>
-          </div>
+        <div className="justify-center w-full align-middle flex flex-col md:flex-row">
+          <WorkshopElement></WorkshopElement>
+          <WorkshopElement></WorkshopElement>
+          <WorkshopElement></WorkshopElement>
         </div>
       </div>
     </>
