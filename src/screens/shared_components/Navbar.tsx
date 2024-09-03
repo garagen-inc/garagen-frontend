@@ -3,6 +3,7 @@ import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import logo from "./shared_assets/logo.png";
 import { navElements } from "./shared_assets/constants";
+import { Link } from "react-router-dom";
 const Navbar = () => {
   // const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
@@ -42,18 +43,18 @@ const Navbar = () => {
             ))}
           </ul> */}
           <div className="flex justify-center space-x-12 items-center font-bold">
-            <a
-              href="/login"
+            <Link
+              to="/login"
               className="py-2 px-8 rounded-full bg-gg-lavender-blush hover:text-white hover:bg-gg-rich-black transition duration-200 ease-in-out"
             >
               Login
-            </a>
-            <a
-              href="registeruser"
+            </Link>
+            <Link
+              to="/registeruser"
               className="bg-gg-rich-black text-white hover:text-black hover:bg-gg-lavender-blush whitespace-nowrap font-bold py-2 px-3 rounded-full transition duration-200 ease-in-out"
             >
               Criar Conta
-            </a>
+            </Link>
           </div>
           {/* <div className="lg:hidden md:flex flex-col justify-end">
             <button onClick={toggleNavBar}>
