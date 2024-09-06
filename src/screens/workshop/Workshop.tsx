@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import moment, { Moment } from "moment";
 import "moment/locale/pt-br";
 import Navbar from "../shared_components/Navbar";
-import Modal from "../shared_components/Modal";
+import Modal from "./assets/Modal";
 
 const Workshop: React.FC = () => {
   moment.locale("pt-br");
