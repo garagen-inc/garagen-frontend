@@ -3,7 +3,7 @@ import { Login } from "./screens/auth/Login";
 import { RegisterUser } from "./screens/auth/RegisterUser";
 import { RegisterUserWorkshop } from "./screens/auth/RegisterUserWorkshop";
 import { Home } from "./screens/home/Home";
-
+import Workshop from "./screens/workshop/Workshop";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -20,6 +20,10 @@ const router = createBrowserRouter([
   {
     path: "/registerworkshop",
     element: <RegisterUserWorkshop />,
+  },
+  {
+    path: "/workshop",
+    element: <Workshop />,
   },
 ]);
 
