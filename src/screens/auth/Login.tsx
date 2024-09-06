@@ -4,6 +4,7 @@ import GarageIcon from "../shared_components/shared_assets/garage.svg";
 import { FormLogin } from "./assets/FormLogin";
 import CustomButton from "./assets/components/CustomButton";
 import BasePageLayout from "./assets/components/BasePage";
+
 export function Login() {
   const buttons = (
     <>
