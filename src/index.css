@@ -4,18 +4,25 @@
 @tailwind components;
 @tailwind utilities;
 
-:root{
-    font-family: "Poppins", sans-serif;
+:root {
+  font-family: 'Poppins', sans-serif;
 }
 
 .circle {
-    @apply rounded-full bg-gg-sunglow;
-    width: 100vw; /* Define a largura do círculo como 100% da largura da viewport */
-    height: 100vw; /* Define a altura do círculo igual à largura para manter a forma circular */
-    min-width: 100vh;
-    min-height: 100vh;
-    position: absolute;
-    top: 50%; /* Alinha verticalmente no meio */
-    left: 50%; /* Alinha horizontalmente no meio */
-    transform: translate(-100%, -50%); /* Centraliza o círculo no ponto definido por top e left */
-  }
+  @apply rounded-full bg-gg-sunglow;
+  width: 100vw; /* Define a largura do círculo como 100% da largura da viewport */
+  height: 100vw; /* Define a altura do círculo igual à largura para manter a forma circular */
+  min-width: 100vh;
+  min-height: 100vh;
+  position: absolute;
+  top: 50%; /* Alinha verticalmente no meio */
+  left: 50%; /* Alinha horizontalmente no meio */
+  transform: translate(
+    -100%,
+    -50%
+  ); /* Centraliza o círculo no ponto definido por top e left */
+}
+
+iframe#webpack-dev-server-client-overlay {
+  display: none;
+}

@@ -1,10 +1,13 @@
-import React from "react";
-import { Menu, X } from "lucide-react";
-import { useState, useEffect } from "react";
-import logo from "./shared_assets/logo.png";
-import { navElements } from "./shared_assets/constants";
-import { Link } from "react-router-dom";
+import React from 'react'
+import { Menu, X } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import logo from './shared_assets/logo.png'
+import { navElements } from './shared_assets/constants'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../../contexts/AuthContext'
 const Navbar = () => {
+  const { user, logout } = useAuth()
+
   // const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
   // const toggleNavBar = () => {
@@ -43,18 +46,31 @@ const Navbar = () => {
             ))}
           </ul> */}
           <div className="flex justify-center space-x-12 items-center font-bold">
-            <Link
-              to="/login"
-              className="py-2 px-8 rounded-full bg-gg-lavender-blush hover:text-white hover:bg-gg-rich-black transition duration-200 ease-in-out"
-            >
-              Login
-            </Link>
-            <Link
-              to="/registeruser"
-              className="bg-gg-rich-black text-white hover:text-black hover:bg-gg-lavender-blush whitespace-nowrap font-bold py-2 px-3 rounded-full transition duration-200 ease-in-out"
-            >
-              Criar Conta
-            </Link>
+            {user ? (
+              <p>{user.name}</p>
+            ) : (
+              <Link
+                to="/login"
+                className="py-2 px-8 rounded-full bg-gg-lavender-blush hover:text-white hover:bg-gg-rich-black transition duration-200 ease-in-out"
+              >
+                Login
+              </Link>
+            )}
+            {user ? (
+              <p
+                className="cursor-pointer bg-gg-rich-black text-white hover:text-black hover:bg-gg-lavender-blush whitespace-nowrap font-bold py-2 px-3 rounded-full transition duration-200 ease-in-out"
+                onClick={logout}
+              >
+                Sair
+              </p>
+            ) : (
+              <Link
+                to="/registeruser"
+                className="bg-gg-rich-black text-white hover:text-black hover:bg-gg-lavender-blush whitespace-nowrap font-bold py-2 px-3 rounded-full transition duration-200 ease-in-out"
+              >
+                Criar Conta
+              </Link>
+            )}
           </div>
           {/* <div className="lg:hidden md:flex flex-col justify-end">
             <button onClick={toggleNavBar}>
@@ -86,7 +102,7 @@ const Navbar = () => {
         )} */}
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

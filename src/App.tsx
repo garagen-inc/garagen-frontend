@@ -1,30 +1,40 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Login } from "./screens/auth/Login";
-import { RegisterUser } from "./screens/auth/RegisterUser";
-import { RegisterUserWorkshop } from "./screens/auth/RegisterUserWorkshop";
-import { Home } from "./screens/home/Home";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { Login } from './screens/auth/Login'
+import { RegisterUser } from './screens/auth/RegisterUser'
+import { RegisterUserWorkshop } from './screens/auth/RegisterUserWorkshop'
+import { Home } from './screens/home/Home'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { AuthProvider } from './contexts/AuthContext'
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <Home />,
   },
   {
-    path: "/login",
+    path: '/login',
     element: <Login />,
   },
   {
-    path: "/registeruser",
+    path: '/registeruser',
     element: <RegisterUser />,
   },
   {
-    path: "/registerworkshop",
+    path: '/registerworkshop',
     element: <RegisterUserWorkshop />,
   },
-]);
+])
+
+const queryClient = new QueryClient()
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </QueryClientProvider>
+  )
 }
 
-export default App;
+export default App

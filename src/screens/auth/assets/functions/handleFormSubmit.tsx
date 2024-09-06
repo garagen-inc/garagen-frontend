@@ -1,36 +1,32 @@
-import validateCPF from "./validatorCPF";
-import axios from "axios";
+import validateCPF from './validatorCPF'
+import axios from 'axios'
 
 const validateEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
-
-const api = axios.create({
-  baseURL: "https://api.example.com", // Base URL padrão
-});
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email)
+}
 
 interface UserValues {
-  name: string;
-  password: string;
-  phone: string;
-  cpf: string;
-  email: string;
+  name: string
+  password: string
+  phone: string
+  cpf: string
+  email: string
 }
 
 interface FormValues {
-  email: string;
-  password: string;
-  username: string;
-  surname: string;
-  confirmPassword: string;
-  cpf: string;
-  phone: string;
+  email: string
+  password: string
+  username: string
+  surname: string
+  confirmPassword: string
+  cpf: string
+  phone: string
 
-  companyName?: string;
-  address?: string;
-  number?: string;
-  postalCode?: string;
+  companyName?: string
+  address?: string
+  number?: string
+  postalCode?: string
 }
 
 export const handleFormSubmit = async (
@@ -42,34 +38,34 @@ export const handleFormSubmit = async (
   baseURL: string // Adiciona o parâmetro baseURL
 ): Promise<string | null> => {
   // Modificado para retornar o erro
-  event.preventDefault();
+  event.preventDefault()
 
   if (isUserForm) {
     const { email, password, username, surname, confirmPassword, cpf, phone } =
-      formValues;
+      formValues
 
     if (!username || !surname) {
-      return "Por favor, insira seu nome completo.";
+      return 'Por favor, insira seu nome completo.'
     }
 
     if (!validateCPF(cpf)) {
-      return "CPF inválido.";
+      return 'CPF inválido.'
     }
 
     if (!phone) {
-      return "Por favor, insira seu telefone.";
+      return 'Por favor, insira seu telefone.'
     }
 
     if (!validateEmail(email)) {
-      return "Por favor, insira um e-mail válido.";
+      return 'Por favor, insira um e-mail válido.'
     }
 
     if (!password) {
-      return "Por favor, insira sua senha.";
+      return 'Por favor, insira sua senha.'
     }
 
     if (password !== confirmPassword) {
-      return "Senhas não coincidem.";
+      return 'Senhas não coincidem.'
     }
 
     if (awaitRegisterCompany === false) {
@@ -80,17 +76,17 @@ export const handleFormSubmit = async (
         phone,
         cpf,
         email,
-      };
+      }
 
       try {
-        await postUser(userData, baseURL); // Envia o formulário do usuário
-        console.log("Usuário registrado com sucesso!");
-        return null;
+        await postUser(userData, baseURL) // Envia o formulário do usuário
+        console.log('Usuário registrado com sucesso!')
+        return null
       } catch (error) {
-        return "Erro ao registrar o usuário.";
+        return 'Erro ao registrar o usuário.'
       }
     } else {
-      return null;
+      return null
     }
   } else {
     const {
@@ -105,10 +101,10 @@ export const handleFormSubmit = async (
       confirmPassword,
       cpf,
       phone,
-    } = formValues;
+    } = formValues
 
     if (!companyName || !address || !number || !postalCode) {
-      return "Por favor, preencha todos os campos da empresa.";
+      return 'Por favor, preencha todos os campos da empresa.'
     }
 
     try {
@@ -127,23 +123,23 @@ export const handleFormSubmit = async (
           postalCode,
         },
         baseURL
-      );
-      console.log(formValues);
-      return null;
+      )
+      console.log(formValues)
+      return null
     } catch (error) {
-      return "Erro ao registrar a empresa.";
+      return 'Erro ao registrar a empresa.'
     }
   }
-};
+}
 
 // Funções fictícias para enviar dados
 const postUser = async (userData: UserValues, baseURL: string) => {
-  await axios.post(`${baseURL}/users`, userData);
-};
+  await axios.post(`${baseURL}/users`, userData)
+}
 
 const postUserCompany = async (
   companyData: Partial<FormValues>,
   baseURL: string
 ) => {
-  await axios.post(`${baseURL}/companies`, companyData);
-};
+  await axios.post(`${baseURL}/companies`, companyData)
+}
