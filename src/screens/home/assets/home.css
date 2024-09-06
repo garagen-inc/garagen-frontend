@@ -1,0 +1,13 @@
+.search-bar-container {
+    transition: background-color 0.3s, transform 0.3s;
+  }
+  
+  .search-bar-container.hovered {
+    background-color: #84d0a9;
+    transform: scale(1.05); 
+  }
+  
+  .search-bar-container.default {
+    background-color: #d1fae5; 
+    transform: scale(1); 
+  }
