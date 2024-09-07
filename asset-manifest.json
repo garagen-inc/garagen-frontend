@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/garager-frontend/static/css/main.cd925894.css",
-    "main.js": "/garager-frontend/static/js/main.e7a544b1.js",
+    "main.js": "/garager-frontend/static/js/main.242d7d7c.js",
     "static/media/workshop.jpg": "/garager-frontend/static/media/workshop.71f09198706acc72d259.jpg",
     "static/media/garager-transparent-logo.svg": "/garager-frontend/static/media/garager-transparent-logo.7545203df7f6a33ad6adac2e3b6683d1.svg",
     "index.html": "/garager-frontend/index.html",
@@ -9,10 +9,10 @@
     "static/media/garage.svg": "/garager-frontend/static/media/garage.71efae27be49dc27c5b10db04b331013.svg",
     "static/media/user.svg": "/garager-frontend/static/media/user.be851f03f5bdea9ec61c457cf369f430.svg",
     "main.cd925894.css.map": "/garager-frontend/static/css/main.cd925894.css.map",
-    "main.e7a544b1.js.map": "/garager-frontend/static/js/main.e7a544b1.js.map"
+    "main.242d7d7c.js.map": "/garager-frontend/static/js/main.242d7d7c.js.map"
   },
   "entrypoints": [
     "static/css/main.cd925894.css",
-    "static/js/main.e7a544b1.js"
+    "static/js/main.242d7d7c.js"
   ]
 }
