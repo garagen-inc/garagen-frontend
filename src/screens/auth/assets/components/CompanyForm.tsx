@@ -1,5 +1,5 @@
 import React from 'react'
-import FormElement from './FormElement'
+import InputForm from './InputForm'
 
 interface CompanyFormProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -11,6 +11,7 @@ interface CompanyFormProps {
     postalCode: string
     city: string
     state: string
+    workshop_description: string
   }
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
 }
@@ -22,16 +23,24 @@ const CompanyForm: React.FC<CompanyFormProps> = ({
   onSubmit,
 }) => (
   <form className="space-y-4" onSubmit={onSubmit}>
-    <FormElement
+    <InputForm
       isRequired={true}
       nameid="companyName"
-      span="Nome da Empresa"
+      span="Nome da Oficina"
       type="text"
       value={formValues.companyName}
       onChange={onChange}
     />
+    <InputForm
+      isRequired={true}
+      nameid="workshop_description"
+      span="Descrição da Oficina"
+      type="text"
+      value={formValues.workshop_description}
+      onChange={onChange}
+    />
     <div className="flex flex-row gap-4">
-      <FormElement
+      <InputForm
         isRequired={true}
         nameid="address"
         span="Logradouro"
@@ -39,7 +48,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({
         value={formValues.address}
         onChange={onChange}
       />
-      <FormElement
+      <InputForm
         isRequired={true}
         nameid="number"
         span="Número"
@@ -49,7 +58,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({
       />
     </div>
     <div className="flex flex-row gap-4">
-      <FormElement
+      <InputForm
         isRequired={true}
         nameid="city"
         span="Cidade"
@@ -57,7 +66,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({
         value={formValues.city}
         onChange={onChange}
       />
-      <FormElement
+      <InputForm
         isRequired={true}
         nameid="state"
         span="Estado"
@@ -66,7 +75,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({
         onChange={onChange}
       />
     </div>
-    <FormElement
+    <InputForm
       isRequired={true}
       nameid="postalCode"
       span="CEP"

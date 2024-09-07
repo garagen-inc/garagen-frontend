@@ -2,10 +2,15 @@ import React from 'react'
 import glass from '../img/magnifying-glass.svg'
 import workshopimg from '../img/workshop.jpg'
 import { WorkshopDTO } from '../../../../interfaces/workshop/workshop.dto'
+import { useNavigate } from 'react-router-dom'
 
 export const WorkshopElement = ({ workshop }: { workshop: WorkshopDTO }) => {
+  const navigate = useNavigate()
   return (
-    <div className="bg-slate-200 sm:w-full sm:mx-4 mx-4 lg:w-64  flex flex-col rounded-lg shadow-xl overflow-hidden ">
+    <div
+      className="bg-slate-200 sm:w-full sm:mx-4 mx-4 lg:w-64  flex flex-col rounded-lg shadow-xl overflow-hidden cursor-pointer"
+      onClick={() => navigate(`/workshop/${workshop.id}`)}
+    >
       <img src={workshopimg} alt=""></img>
       <div className="flex justify-start flex-col">
         <span className="font-bold m-5 text-lg">{workshop.name}</span>

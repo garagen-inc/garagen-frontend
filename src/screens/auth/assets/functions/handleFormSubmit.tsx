@@ -32,6 +32,7 @@ interface FormValues {
   postalCode?: string
   state?: string
   city?: string
+  workshop_description?: string
 }
 
 export const handleFormSubmit = async (
@@ -113,13 +114,22 @@ export const handleFormSubmit = async (
       phone,
       city,
       state,
+      workshop_description,
     } = formValues
 
     if (password !== confirmPassword) {
       return 'As senhas devem coincidir.'
     }
 
-    if (!companyName || !address || !number || !postalCode || !city || !state) {
+    if (
+      !companyName ||
+      !address ||
+      !number ||
+      !postalCode ||
+      !city ||
+      !state ||
+      !workshop_description
+    ) {
       return 'Por favor, preencha todos os campos da empresa.'
     }
 
@@ -131,7 +141,7 @@ export const handleFormSubmit = async (
         cpf,
         password,
         workshop_name: companyName,
-        workshop_description: '',
+        workshop_description,
         address_name: number,
         street: address,
         city: city,
