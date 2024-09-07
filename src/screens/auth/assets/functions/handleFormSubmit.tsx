@@ -1,5 +1,8 @@
+import { UseMutateAsyncFunction } from '@tanstack/react-query'
+import { CreateUserDTO } from '../../../../interfaces/user/create-user.dto'
 import validateCPF from './validatorCPF'
-import axios from 'axios'
+import { UserDTO } from '../../../../interfaces/user/user.dto'
+import { CreateUserWorkshopDTO } from '../../../../interfaces/user/create-user-workshop.dto'
 
 const validateEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -27,6 +30,8 @@ interface FormValues {
   address?: string
   number?: string
   postalCode?: string
+  state?: string
+  city?: string
 }
 
 export const handleFormSubmit = async (
@@ -35,7 +40,13 @@ export const handleFormSubmit = async (
   formValues: FormValues,
   isUserForm: boolean = true,
   awaitRegisterCompany: boolean = false,
-  baseURL: string // Adiciona o parâmetro baseURL
+  onCreateUser?: UseMutateAsyncFunction<UserDTO, Error, CreateUserDTO, unknown>,
+  onCreateUserWorkshop?: UseMutateAsyncFunction<
+    UserDTO,
+    Error,
+    CreateUserWorkshopDTO,
+    unknown
+  >
 ): Promise<string | null> => {
   // Modificado para retornar o erro
   event.preventDefault()
@@ -79,8 +90,7 @@ export const handleFormSubmit = async (
       }
 
       try {
-        await postUser(userData, baseURL) // Envia o formulário do usuário
-        console.log('Usuário registrado com sucesso!')
+        await onCreateUser?.(userData)
         return null
       } catch (error) {
         return 'Erro ao registrar o usuário.'
@@ -101,45 +111,38 @@ export const handleFormSubmit = async (
       confirmPassword,
       cpf,
       phone,
+      city,
+      state,
     } = formValues
 
-    if (!companyName || !address || !number || !postalCode) {
+    if (password !== confirmPassword) {
+      return 'As senhas devem coincidir.'
+    }
+
+    if (!companyName || !address || !number || !postalCode || !city || !state) {
       return 'Por favor, preencha todos os campos da empresa.'
     }
 
     try {
-      await postUserCompany(
-        {
-          email,
-          password,
-          username,
-          surname,
-          confirmPassword,
-          cpf,
-          phone,
-          companyName,
-          address,
-          number,
-          postalCode,
-        },
-        baseURL
-      )
+      await onCreateUserWorkshop?.({
+        name: username + ' ' + surname,
+        email,
+        phone,
+        cpf,
+        password,
+        workshop_name: companyName,
+        workshop_description: '',
+        address_name: number,
+        street: address,
+        city: city,
+        zip_code: postalCode,
+        state: state,
+      })
+
       console.log(formValues)
       return null
     } catch (error) {
       return 'Erro ao registrar a empresa.'
     }
   }
-}
-
-// Funções fictícias para enviar dados
-const postUser = async (userData: UserValues, baseURL: string) => {
-  await axios.post(`${baseURL}/users`, userData)
-}
-
-const postUserCompany = async (
-  companyData: Partial<FormValues>,
-  baseURL: string
-) => {
-  await axios.post(`${baseURL}/companies`, companyData)
 }

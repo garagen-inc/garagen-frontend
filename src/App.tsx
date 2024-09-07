@@ -5,6 +5,7 @@ import { RegisterUserWorkshop } from './screens/auth/RegisterUserWorkshop'
 import { Home } from './screens/home/Home'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from './contexts/AuthContext'
+import { Toaster } from 'react-hot-toast'
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <Toaster />
         <RouterProvider router={router} />
       </AuthProvider>
     </QueryClientProvider>

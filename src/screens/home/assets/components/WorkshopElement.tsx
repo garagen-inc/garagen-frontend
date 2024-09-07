@@ -1,24 +1,17 @@
-import React from "react";
-import glass from "../img/magnifying-glass.svg";
-import workshop from "../img/workshop.jpg";
+import React from 'react'
+import glass from '../img/magnifying-glass.svg'
+import workshopimg from '../img/workshop.jpg'
+import { WorkshopDTO } from '../../../../interfaces/workshop/workshop.dto'
 
-interface WorkshopElementProps {
-  workshop_image?: string;
-  workshop_name?: string;
-  workshop_desc?: string;
-}
-
-export const WorkshopElement: React.FC<WorkshopElementProps> = ({
-  workshop_image = "Placeholder Image URL",
-  workshop_name = "Placeholder Name",
-  workshop_desc = "Placeholder Description",
-}) => {
+export const WorkshopElement = ({ workshop }: { workshop: WorkshopDTO }) => {
   return (
-    <div className="bg-slate-200 m-10 sm:w-5/6 md:w-1/2 lg:w-1/3 flex flex-col rounded-lg shadow-xl overflow-hidden ">
-      <img src={workshop} alt=""></img>
+    <div className="bg-slate-200 sm:w-full sm:mx-4 mx-4 lg:w-64  flex flex-col rounded-lg shadow-xl overflow-hidden ">
+      <img src={workshopimg} alt=""></img>
       <div className="flex justify-start flex-col">
-        <span className="font-bold m-5 text-lg">Lugar</span>
-        <span className="ml-5">Descrição</span>
+        <span className="font-bold m-5 text-lg">{workshop.name}</span>
+        {workshop.address?.city && (
+          <span className="ml-5">{`${workshop.address?.city}, ${workshop.address?.street} ${workshop.address?.name}`}</span>
+        )}
         <div className="flex justify-end">
           <button className="bg-gg-rich-black flex gap-3 flex-row text-gg-sunglow p-4 mt-5 mb-5 rounded-tl-lg rounded-bl-lg">
             Verificar horários <img src={glass} alt="" className="w-5"></img>
@@ -26,5 +19,5 @@ export const WorkshopElement: React.FC<WorkshopElementProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

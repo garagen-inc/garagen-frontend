@@ -1,15 +1,15 @@
-import React from "react";
-import UserIcon from "../shared_components/shared_assets/user.svg";
-import GarageIcon from "../shared_components/shared_assets/garage.svg";
-import CustomButton from "./assets/components/CustomButton";
-import BasePageLayout from "./assets/components/BasePage";
-import FormRegisterUser from "./assets/FormRegisterUser";
+import React from 'react'
+import UserIcon from '../shared_components/shared_assets/user.svg'
+import GarageIcon from '../shared_components/shared_assets/garage.svg'
+import CustomButton from './assets/components/CustomButton'
+import BasePageLayout from './assets/components/BasePage'
+import FormRegisterUser from './assets/FormRegisterUser'
 export function RegisterUser() {
   const buttons = (
     <>
       <CustomButton
         redirectTo="login"
-        buttonText="Logar-se"
+        buttonText="Entrar"
         imgSrc={UserIcon}
         imgAlt="Ícone de usuário"
         buttonColor="bg-gg-lavender-blush"
@@ -18,7 +18,7 @@ export function RegisterUser() {
       />
       <CustomButton
         redirectTo="registerworkshop"
-        buttonText="Cadastrar conta administrativa"
+        buttonText="Sou dono de garagem"
         imgSrc={GarageIcon}
         imgAlt="Ícone de garagem"
         buttonColor="bg-gg-lavender-blush"
@@ -26,7 +26,7 @@ export function RegisterUser() {
         textColor="text-black"
       />
     </>
-  );
+  )
   return (
     <BasePageLayout
       mdFlexOrientation="md:flex-row-reverse"
@@ -34,5 +34,5 @@ export function RegisterUser() {
       formComponent={<FormRegisterUser />}
       buttons={buttons}
     />
-  );
+  )
 }

@@ -1,5 +1,8 @@
 export enum QueryKeys {
-  LOGIN = 'login',
+  LOGIN = 'LOGIN',
+  LIST_WORKSHOPS = 'LIST_WORKSHOPS',
+  CREATE_USER = 'CREATE_USER',
+  CREATE_WORKSHOP_USER = 'CREATE_WORKSHOP_USER',
 }
 
 export enum StorageKeys {

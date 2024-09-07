@@ -1,14 +1,14 @@
-import React from "react";
-import UserIcon from "../shared_components/shared_assets/user.svg";
-import CustomButton from "./assets/components/CustomButton";
-import BasePageLayout from "./assets/components/BasePage";
-import FormRegisterUserWorkshop from "./assets/FormRegisterUserWorkshop";
+import React from 'react'
+import UserIcon from '../shared_components/shared_assets/user.svg'
+import CustomButton from './assets/components/CustomButton'
+import BasePageLayout from './assets/components/BasePage'
+import FormRegisterUserWorkshop from './assets/FormRegisterUserWorkshop'
 export function RegisterUserWorkshop() {
   const buttons = (
     <>
       <CustomButton
         redirectTo="login"
-        buttonText="Logar-se"
+        buttonText="Entrar"
         imgSrc={UserIcon}
         imgAlt="Ícone de usuário"
         buttonColor="bg-gg-lavender-blush"
@@ -17,7 +17,7 @@ export function RegisterUserWorkshop() {
       />
       <CustomButton
         redirectTo="registeruser"
-        buttonText="Cadastrar conta convencional"
+        buttonText="Criar conta convencional"
         imgSrc={UserIcon}
         imgAlt="Ícone de usuário"
         buttonColor="bg-gg-lavender-blush"
@@ -25,7 +25,7 @@ export function RegisterUserWorkshop() {
         textColor="text-black"
       />
     </>
-  );
+  )
   return (
     <BasePageLayout
       mdFlexOrientation="md:flex-row-reverse"
@@ -33,5 +33,5 @@ export function RegisterUserWorkshop() {
       formComponent={<FormRegisterUserWorkshop />}
       buttons={buttons}
     />
-  );
+  )
 }
