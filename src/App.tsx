@@ -3,6 +3,7 @@ import { Login } from './screens/auth/Login'
 import { RegisterUser } from './screens/auth/RegisterUser'
 import { RegisterUserWorkshop } from './screens/auth/RegisterUserWorkshop'
 import { Home } from './screens/home/Home'
+import Workshop from './screens/workshop/Workshop'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from './contexts/AuthContext'
 import { Toaster } from 'react-hot-toast'
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: '/registerworkshop',
     element: <RegisterUserWorkshop />,
+  },
+  {
+    path: '/workshop',
+    element: <Workshop />,
   },
 ])
 
