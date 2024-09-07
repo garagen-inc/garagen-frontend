@@ -1,38 +1,57 @@
-import React, { useState } from "react";
+import { useMutation } from '@tanstack/react-query'
+import React, { useState } from 'react'
+import { QueryKeys } from '../../../constants/enums'
+import { GaragerApi } from '../../../services/api'
+import { digestApiError } from '../../../utils/functions'
+import { useAuth } from '../../../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 export const FormLogin: React.FC = () => {
+  const { login } = useAuth()
+  const navigate = useNavigate()
+  const { mutateAsync, isPending } = useMutation({
+    mutationKey: [QueryKeys.LOGIN],
+    mutationFn: async (params: { email: string; password: string }) => {
+      const response = await GaragerApi.login(params.email, params.password)
+      login(response.access_token, response.user)
+      navigate('/')
+    },
+    onError: (e) => {
+      setError(digestApiError(e))
+    },
+  })
+
   // State para armazenar a mensagem de erro
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null)
 
   // Função para validar o e-mail
   const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
 
   // Função para lidar com o envio do formulário
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    const form = event.currentTarget;
-    const email = form.email.value;
-    const password = form.password.value;
+    const form = event.currentTarget
+    const email = form.email.value
+    const password = form.password.value
 
     if (!validateEmail(email)) {
-      setError("Por favor, insira um e-mail válido.");
-      return;
+      setError('Por favor, insira um e-mail válido.')
+      return
     }
 
     if (!password) {
-      setError("Por favor, insira sua senha.");
-      return;
+      setError('Por favor, insira sua senha.')
+      return
     }
 
-    setError(null);
+    setError(null)
 
-    //TODO envio do formulário.
-    console.log("Formulário enviado com sucesso!");
-  };
+    mutateAsync({ email, password })
+  }
 
   return (
     <div className="flex flex-col justify-center p-8 md:p-14 w-full md:w-1/2">
@@ -70,11 +89,11 @@ export const FormLogin: React.FC = () => {
           type="submit"
           className="w-full bg-gg-rich-black text-white p-2 rounded-lg mb-6 transition-colors duration-200 ease-in-out hover:bg-gg-lavender-blush hover:text-black hover:border hover:border-gray-300"
         >
-          Entrar
+          {isPending ? 'Entrando...' : 'Entrar'}
         </button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default FormLogin;
+export default FormLogin

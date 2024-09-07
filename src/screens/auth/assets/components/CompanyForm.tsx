@@ -1,21 +1,23 @@
-import React from "react";
-import FormElement from "./FormElement";
+import React from 'react'
+import FormElement from './FormElement'
 
 interface CompanyFormProps {
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  isLoading: boolean
   formValues: {
-    companyName: string;
-    address: string;
-    number: string;
-    postalCode: string;
-    city: string;
-    state: string;
-  };
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+    companyName: string
+    address: string
+    number: string
+    postalCode: string
+    city: string
+    state: string
+  }
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
 }
 
 const CompanyForm: React.FC<CompanyFormProps> = ({
   onChange,
+  isLoading,
   formValues,
   onSubmit,
 }) => (
@@ -52,7 +54,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({
         nameid="city"
         span="Cidade"
         type="text"
-        value={formValues.address}
+        value={formValues.city}
         onChange={onChange}
       />
       <FormElement
@@ -60,7 +62,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({
         nameid="state"
         span="Estado"
         type="text"
-        value={formValues.number}
+        value={formValues.state}
         onChange={onChange}
       />
     </div>
@@ -73,12 +75,13 @@ const CompanyForm: React.FC<CompanyFormProps> = ({
       onChange={onChange}
     />
     <button
+      disabled={isLoading}
       type="submit"
       className="w-full bg-gg-rich-black text-white p-2 rounded-lg mb-6 transition-colors duration-200 ease-in-out hover:bg-gg-lavender-blush hover:text-black hover:border hover:border-gray-300"
     >
-      Enviar Dados
+      {isLoading ? 'Carregando...' : 'Enviar Dados'}
     </button>
   </form>
-);
+)
 
-export default CompanyForm;
+export default CompanyForm
