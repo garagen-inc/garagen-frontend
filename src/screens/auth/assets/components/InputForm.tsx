@@ -1,21 +1,21 @@
-import React from "react";
+import React from 'react'
 
 interface CustomFieldProps {
-  span: string;
-  nameid: string;
-  type?: string;
-  isRequired: boolean;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>; // Tipo correto para onChange
-  value?: string; // Adiciona a prop value
+  span: string
+  nameid: string
+  type?: string
+  isRequired: boolean
+  onChange?: React.ChangeEventHandler<HTMLInputElement> // Tipo correto para onChange
+  value?: string // Adiciona a prop value
 }
 
-const FormElement: React.FC<CustomFieldProps> = ({
-  span = "Default",
-  nameid = "default",
-  type = "text",
+const InputForm: React.FC<CustomFieldProps> = ({
+  span = 'Default',
+  nameid = 'default',
+  type = 'text',
   isRequired = true,
   onChange,
-  value = "",
+  value = '',
 }) => {
   // Se onChange e value são fornecidos, renderiza o input controlado
   return (
@@ -31,6 +31,6 @@ const FormElement: React.FC<CustomFieldProps> = ({
         {...(isRequired ? { required: true } : {})}
       />
     </div>
-  );
-};
-export default FormElement;
+  )
+}
+export default InputForm

@@ -1,5 +1,5 @@
 import React from 'react'
-import FormElement from './FormElement'
+import InputForm from './InputForm'
 
 interface UserFormProps {
   formValues: {
@@ -36,7 +36,7 @@ const UserForm: React.FC<UserFormProps> = ({
         </div>
       )}
       <div className="flex flex-row gap-4">
-        <FormElement
+        <InputForm
           isRequired={true}
           nameid="username"
           span="Nome"
@@ -44,7 +44,7 @@ const UserForm: React.FC<UserFormProps> = ({
           value={formValues.username}
           onChange={onChange}
         />
-        <FormElement
+        <InputForm
           isRequired={true}
           nameid="surname"
           span="Sobrenome"
@@ -53,7 +53,7 @@ const UserForm: React.FC<UserFormProps> = ({
           onChange={onChange}
         />
       </div>
-      <FormElement
+      <InputForm
         isRequired={true}
         nameid="cpf"
         span="CPF (apenas números)"
@@ -61,7 +61,7 @@ const UserForm: React.FC<UserFormProps> = ({
         value={formValues.cpf}
         onChange={onChange}
       />
-      <FormElement
+      <InputForm
         isRequired={true}
         nameid="phone"
         span="Número de telefone"
@@ -69,7 +69,7 @@ const UserForm: React.FC<UserFormProps> = ({
         value={formValues.phone}
         onChange={onChange}
       />
-      <FormElement
+      <InputForm
         isRequired={true}
         nameid="email"
         span="Email"
@@ -77,7 +77,7 @@ const UserForm: React.FC<UserFormProps> = ({
         value={formValues.email}
         onChange={onChange}
       />
-      <FormElement
+      <InputForm
         isRequired={true}
         nameid="password"
         span="Senha"
@@ -85,7 +85,7 @@ const UserForm: React.FC<UserFormProps> = ({
         value={formValues.password}
         onChange={onChange}
       />
-      <FormElement
+      <InputForm
         isRequired={true}
         nameid="confirmPassword"
         span="Confirme sua senha"

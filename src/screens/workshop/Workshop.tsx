@@ -1,168 +1,315 @@
-import React, { useState } from "react";
-import moment, { Moment } from "moment";
-import "moment/locale/pt-br";
-import Navbar from "../shared_components/Navbar";
-import Modal from "./assets/Modal";
+import React, { useState } from 'react'
+import moment, { Moment } from 'moment'
+import 'moment/locale/pt-br'
+import Navbar from '../shared_components/Navbar'
+import Modal from './assets/Modal'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { QueryKeys } from '../../constants/enums'
+import { GaragerApi } from '../../services/api'
+import toast from 'react-hot-toast'
+import workshopimg from '../../assets/images/workshop.jpg'
+import { AvailableSlotDTO } from '../../interfaces/availableSlot/available-slot.dto'
+import { useAuth } from '../../contexts/AuthContext'
+import ManageAvailableSlotModal from './assets/ManageAvailableSlotModal'
+import { CreateAvailableSlotDTO } from '../../interfaces/availableSlot/create-available-slot.dto'
+import { CreateAppointmentDTO } from '../../interfaces/appointment/create-appointment.dto'
+import { dayMap } from '../shared_components/shared_assets/constants'
+import { digestApiError } from '../../utils/functions'
 
 const Workshop: React.FC = () => {
-  moment.locale("pt-br");
+  const { workshopId } = useParams()
+  const navigate = useNavigate()
+  const { user } = useAuth()
 
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const availableSlotMutation = useMutation({
+    mutationKey: [QueryKeys.AVAILABLE_SLOTS],
+    mutationFn: async (data: CreateAvailableSlotDTO) => {
+      return await GaragerApi.createAvailableSlot(data)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.AVAILABLE_SLOTS] })
+      setIsOpenManageAvailableSlotsModal(false)
+      toast.success('Agenda criada com sucesso!')
+    },
+  })
 
-  const today = moment();
-  const days: Moment[] = [];
+  const queryClient = useQueryClient()
 
-  for (let i = 0; i < 8; i++) {
-    days.push(today.clone().add(i, "days"));
+  const appointmentMutation = useMutation({
+    mutationKey: [QueryKeys.APPOINTMENT],
+    mutationFn: async (data: CreateAppointmentDTO) => {
+      return await GaragerApi.createAppointment(data)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.LIST_APPOINTMENT] })
+      toast.success('Agendamento criado com sucesso!')
+    },
+    onError: (e) => {
+      toast.error(digestApiError(e))
+    },
+  })
+
+  const {
+    data: workshop,
+    error,
+    isLoading: isLoadingWorkshop,
+  } = useQuery({
+    queryKey: [QueryKeys.WORKSHOP, workshopId],
+    queryFn: async () => {
+      if (!workshopId) throw new Error('No workshopId provided')
+      return await GaragerApi.findWorkshop(workshopId)
+    },
+  })
+
+  const { data: appointments, isLoading: isLoadingAppointments } = useQuery({
+    queryKey: [QueryKeys.LIST_APPOINTMENT, workshopId],
+    queryFn: async () => {
+      if (!workshopId) throw new Error('No workshopId provided')
+      return await GaragerApi.listAppointments(workshopId)
+    },
+  })
+
+  const getAppointmentsByDate = (date: string) => {
+    if (!appointments) return
+
+    return appointments?.filter(
+      (a) => a.appointment_date === moment(date).format('DD/MM/yyyy')
+    )
   }
 
-  // Horários por dia da semana em inglês
-  const slotsByDay: { [key: string]: string[] } = {
-    Sun: ["07:00 - 08:00", "08:00 - 09:00", "09:00 - 10:00"],
-    Mon: ["07:00 - 08:00", "08:00 - 09:00", "09:00 - 10:00", "10:00 - 11:00"],
-    Tue: ["07:00 - 08:00", "08:00 - 09:00", "09:00 - 10:00", "10:00 - 11:00"],
-    Wed: ["07:00 - 08:00", "08:00 - 09:00", "09:00 - 10:00"],
-    Thu: [
-      "07:00 - 08:00",
-      "08:00 - 09:00",
-      "09:00 - 10:00",
-      "10:00 - 11:00",
-      "11:00 - 12:00",
-    ],
-    Fri: ["07:00 - 08:00", "08:00 - 09:00", "09:00 - 10:00"],
-    Sat: ["08:00 - 09:00", "09:00 - 10:00", "10:00 - 11:00"],
-  };
+  const isUserOwnerOfThisWorkshop =
+    user &&
+    user.isWorkshopOwner &&
+    String(user.workshop_id) === String(workshopId)
 
-  // Exemplo de reservas por dia
-  const reservesByDay: { [key: string]: string[] } = {
-    "2024-09-08": ["07:00 - 08:00"],
-    "2024-09-09": ["07:00 - 08:00"],
-  };
+  const { data: available_slots, isLoading: isLoadingAvailableSlots } =
+    useQuery({
+      queryKey: [QueryKeys.AVAILABLE_SLOTS, workshopId],
+      queryFn: async () => {
+        if (!workshopId) throw new Error('No workshopId provided')
+        return await GaragerApi.findWorkshopAvailableSlots(workshopId)
+      },
+    })
 
-  // Função para traduzir dias da semana para português
-  const translateDayOfWeek = (dayOfWeek: string): string => {
-    const translations: { [key: string]: string } = {
-      Sun: "Dom",
-      Mon: "Seg",
-      Tue: "Ter",
-      Wed: "Qua",
-      Thu: "Qui",
-      Fri: "Sex",
-      Sat: "Sab",
-    };
-    return translations[dayOfWeek] || dayOfWeek;
-  };
+  if (error) {
+    navigate('/')
+    toast.error('Falha ao encontrar oficina')
+  }
+
+  moment.locale('pt-br')
+
+  const [calendarDate, setCalendarDate] = useState(moment()) // Estado para a data do calendário
+
+  const goToNextMonth = () => {
+    setCalendarDate(calendarDate.clone().add(1, 'month'))
+  }
+
+  const canNavigateToPreviousMonth = calendarDate
+    .clone()
+    .subtract(1, 'month')
+    .isSameOrAfter(moment(), 'month')
+  const goToPreviousMonth = () => {
+    const newDate = calendarDate.clone().subtract(1, 'month')
+
+    if (newDate.isSameOrAfter(moment(), 'month')) {
+      setCalendarDate(newDate)
+    }
+  }
+
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const startOfMonth = calendarDate.clone().startOf('month')
+  const endOfMonth = calendarDate.clone().endOf('month')
+  const startOfCalendar = startOfMonth.clone().startOf('week')
+  const currentDate = moment()
+
+  const days: Moment[] = []
+  let day = startOfCalendar.clone()
+
+  while (day.isBefore(endOfMonth.clone().add(1, 'week'))) {
+    days.push(day.clone())
+    day.add(1, 'day')
+  }
 
   const handleDayClick = (day: Moment) => {
-    setSelectedDate(day.format("YYYY-MM-DD"));
-    setSelectedSlot(null);
-    setIsModalOpen(true);
-  };
+    setSelectedDate(day.format('YYYY-MM-DD'))
+    setIsModalOpen(true)
+  }
 
-  const getSlotsForDate = (
-    date: string
-  ): { time: string; reserved: boolean }[] => {
-    // Formata o dia da semana para inglês (abreviado)
-    const dayOfWeek = moment(date).locale("en").format("ddd");
-    console.log(`Dia da semana (inglês): ${dayOfWeek}`);
+  const getSlotsForDate = (date: string): AvailableSlotDTO | undefined => {
+    const dayOfWeek = moment(date).format('ddd')
 
-    // Obtém os horários disponíveis para o dia da semana
-    const availableSlots = slotsByDay[dayOfWeek] || [];
-    console.log(`Horários disponíveis: ${availableSlots}`);
+    if (!available_slots) return undefined
 
-    // Formata a data para YYYY-MM-DD para verificar as reservas
-    const formattedDate = moment(date).format("YYYY-MM-DD");
-    const reservedSlots = reservesByDay[formattedDate] || [];
-    console.log(`Horários reservados: ${reservedSlots}`);
+    return available_slots.find((as) => as.day === dayMap[dayOfWeek])
+  }
 
-    // Cria a lista de slots com a indicação se estão reservados ou não
-    return availableSlots.map((slot) => ({
-      time: slot,
-      reserved: reservedSlots.includes(slot), // Marca como reservado se estiver na lista de horários reservados
-    }));
-  };
+  const isDayNotAvailable = (date: string): boolean => {
+    if (!available_slots) return true
+    return !available_slots.find((as) => as.day === dayMap[date])
+  }
 
-  const handleSlotClick = (slot: string) => {
-    setSelectedSlot(slot);
-  };
-
-  const handleConfirm = () => {
-    if (selectedDate && selectedSlot) {
-      alert(
-        `Você confirmou o horário ${selectedSlot} para ${moment(
-          selectedDate
-        ).format("DD MMMM YYYY")}`
-      );
-      handleCloseModal();
-    }
-  };
+  const handleConfirm = (data: CreateAppointmentDTO) => {
+    appointmentMutation.mutateAsync(data)
+  }
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedDate(null);
-    setSelectedSlot(null);
-  };
+    setIsModalOpen(false)
+    setSelectedDate(null)
+  }
+
+  const [isOpenManageAvailableSlotsModal, setIsOpenManageAvailableSlotsModal] =
+    useState(false)
 
   return (
     <>
       <Navbar />
-      <div className="flex h-screen">
-        <div className="w-1/4 bg-gray-100 p-4 border-r border-gray-300">
-          <h2 className="text-2xl font-bold mb-4">Detalhes da Oficina</h2>
-          <p className="text-lg mb-2">Nome da Oficina</p>
-          <p className="text-md mb-4">
-            Descrição da oficina vai aqui. Adicione detalhes importantes sobre o
-            workshop, como horário, local, e outros detalhes relevantes.
-          </p>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded mb-2">
-            Agendar
-          </button>
-          <button className="bg-green-500 text-white px-4 py-2 rounded">
-            Verificar Horários
-          </button>
+      <div className="flex flex-1">
+        <div className="w-1/4 bg-gray-100 p-4 border-r border-gray-300 ">
+          {workshop && !isLoadingWorkshop ? (
+            <>
+              <img
+                src={workshopimg}
+                alt="Imagem da oficina"
+                className="my-2"
+              ></img>
+
+              <h2 className="text-2xl font-bold mb-4">{workshop.name}</h2>
+              <p className="text-lg mb-2">{workshop.description}</p>
+
+              {!isUserOwnerOfThisWorkshop ? (
+                <></>
+              ) : (
+                <>
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded mb-2"
+                    onClick={() => setIsOpenManageAvailableSlotsModal(true)}
+                  >
+                    Gerenciar Agenda
+                  </button>
+                </>
+              )}
+            </>
+          ) : (
+            <h1>Carregando...</h1>
+          )}
         </div>
 
-        <div className="flex-1 p-4">
-          <div className="text-center text-2xl font-bold mb-4">
-            {today.format("MMMM YYYY")}
+        {isLoadingAvailableSlots ? (
+          <div className="flex-1 p-4 flex items-center justify-center">
+            <h1>Carregando...</h1>
           </div>
-
-          <div className="grid grid-cols-8 gap-2 text-center mb-4">
-            {days.map((day, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <button
-                  onClick={() => handleDayClick(day)}
-                  className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded"
-                >
-                  {day.format("D")}
-                </button>
-                <span className="text-sm">{day.format("MMM")}</span>
-                <span className="text-xs">
-                  {translateDayOfWeek(day.format("ddd"))}
-                </span>
+        ) : (
+          <div className="flex-1 p-4">
+            <div className="flex items-center justify-center mb-4">
+              <button
+                disabled={!canNavigateToPreviousMonth}
+                onClick={goToPreviousMonth}
+                className={`text-xl font-bold p-2 hover:bg-gray-200 rounded ${
+                  !canNavigateToPreviousMonth &&
+                  ' hover:bg-transparent text-gray-300 '
+                }`}
+              >
+                &lt;
+              </button>
+              <div className="text-center text-2xl font-bold mx-4 w-[300px]">
+                {calendarDate.format('MMMM YYYY')}
               </div>
-            ))}
+              <button
+                onClick={goToNextMonth}
+                className="text-xl font-bold p-2 hover:bg-gray-200 rounded"
+              >
+                &gt;
+              </button>
+            </div>
+            <div className="grid grid-cols-7 gap-2 text-center mb-4">
+              {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'].map(
+                (day, index) => (
+                  <div key={index} className="font-bold">
+                    {day}
+                  </div>
+                )
+              )}
+            </div>
+
+            <div className="grid grid-cols-7 gap-2">
+              {days.map((day, index) => (
+                <div
+                  key={index}
+                  className={`flex items-center justify-center p-2 ${
+                    day.isBefore(currentDate, 'day')
+                      ? 'bg-blue-100'
+                      : day.isSame(currentDate, 'day') // verifica se é o dia atual
+                      ? 'bg-blue-50 border-blue-500 border-2'
+                      : !day.isSame(
+                          startOfMonth.clone().startOf('month'),
+                          'month'
+                        )
+                      ? 'bg-gray-300'
+                      : isDayNotAvailable(day.format('ddd'))
+                      ? 'bg-red-100'
+                      : 'bg-gray-200'
+                  } rounded`}
+                >
+                  <button
+                    disabled={
+                      day.isBefore(calendarDate, 'day') ||
+                      isDayNotAvailable(day.format('ddd'))
+                    }
+                    onClick={() => handleDayClick(day)}
+                    className={`flex items-center justify-center w-full h-full flex-col ${
+                      isDayNotAvailable(day.format('ddd')) &&
+                      'text-red-600 font-bold'
+                    }`}
+                  >
+                    {day.format('D')}
+                    {isDayNotAvailable(day.format('ddd')) && (
+                      <p className="relative text-[10px] font-bold text-red-600">
+                        {'Fechado'}
+                      </p>
+                    )}
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
-      {selectedDate && (
+      {isOpenManageAvailableSlotsModal && (
+        <ManageAvailableSlotModal
+          onClose={() => setIsOpenManageAvailableSlotsModal(false)}
+          isLoading={availableSlotMutation.isPending}
+          onConfirm={(createAvailableSlot) => {
+            availableSlotMutation.mutateAsync({
+              ...createAvailableSlot,
+              workshopId: Number(workshopId),
+            })
+          }}
+        />
+      )}
+
+      {selectedDate && workshop && (
         <Modal
+          workshop_id={workshop.id}
           isOpen={isModalOpen}
+          selectedDate={selectedDate}
           onClose={handleCloseModal}
+          appointments={getAppointmentsByDate(selectedDate)}
           title={`Horários disponíveis para ${moment(selectedDate).format(
-            "DD MMMM YYYY"
-          )}`}
-          slots={getSlotsForDate(selectedDate)}
-          selectedSlot={selectedSlot}
-          onSelectSlot={handleSlotClick}
+            'DD'
+          )} de ${moment(selectedDate).format('MMMM')} de ${moment(
+            selectedDate
+          ).format('YYYY')}`}
+          availableSlot={getSlotsForDate(selectedDate)}
+          isLoading={appointmentMutation.isPending || isLoadingAppointments}
           onConfirm={handleConfirm}
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default Workshop;
+export default Workshop

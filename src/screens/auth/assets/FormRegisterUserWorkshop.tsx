@@ -30,6 +30,7 @@ export const FormRegisterUserWorkshop: React.FC = () => {
     postalCode: '',
     city: '',
     state: '',
+    workshop_description: '',
   })
 
   const [isUserForm, setIsUserForm] = useState(true) // Controla qual formulário exibir
