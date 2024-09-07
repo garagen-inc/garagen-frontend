@@ -1,8 +1,4 @@
-import React from 'react'
-import { Menu, X } from 'lucide-react'
-import { useState, useEffect } from 'react'
-import logo from './shared_assets/logo.png'
-import { navElements } from './shared_assets/constants'
+import logo from '../../assets/images/garager-transparent-logo.svg'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 const Navbar = () => {
@@ -31,12 +27,11 @@ const Navbar = () => {
   // }, []);
 
   return (
-    <nav className="sticky top-0 z-50 py-3 backdrop-blur-lg border-b bg-gg-sunglow">
+    <nav className="sticky top-0 z-50 py-3 backdrop-blur-lg border-b bg-gg-sunglow ">
       <div className="container px-4 mx-auto relative text-sm">
         <div className="flex justify-between items-center">
           <div className="flex items-center flex-shrink-0">
-            <img className="h-10 w-10 mr-10" src={logo} alt="logo"></img>
-            <div className="span text-xl tracking tight">GaraGer</div>
+            <img src={logo} className="size-16" alt="logo"></img>
           </div>
           {/* <ul className="hidden lg:flex ml-14 space-x-12">
             {navElements.map((item, index) => (

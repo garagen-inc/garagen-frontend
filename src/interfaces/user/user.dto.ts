@@ -1,3 +1,5 @@
+import { WorkshopDTO } from '../workshop/workshop.dto'
+
 export interface UserDTO {
   id: number
   name: string
@@ -7,8 +9,8 @@ export interface UserDTO {
   password: string
   isWorkshopOwner: boolean
   workshop_id: number | null
-  //   workshop?: WorkshopDTO
-  //   appointments?: AppointmentEntity[]
+  workshop?: WorkshopDTO
+  // appointments?: AppointmentEntity[]
   deletedAt: Date | null
   createdAt: Date
   updatedAt: Date

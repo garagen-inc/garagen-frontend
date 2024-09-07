@@ -1,41 +1,62 @@
-import React, { useState } from "react";
-import UserForm from "./components/UserForm";
-import { handleFormSubmit } from "./functions/handleFormSubmit";
-import { maskCPF, maskPhoneNumber } from "./functions/masks";
-
-const BASE_URL = "https://api.example.com"; // Definir url base
+import React, { useState } from 'react'
+import UserForm from './components/UserForm'
+import { handleFormSubmit } from './functions/handleFormSubmit'
+import { maskCPF, maskPhoneNumber } from './functions/masks'
+import { useMutation } from '@tanstack/react-query'
+import { QueryKeys } from '../../../constants/enums'
+import { GaragerApi } from '../../../services/api'
+import { CreateUserDTO } from '../../../interfaces/user/create-user.dto'
+import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
+import { digestApiError } from '../../../utils/functions'
 
 export const FormRegisterUser: React.FC = () => {
-  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate()
+
+  const [error, setError] = useState<string | null>(null)
   const [formValues, setFormValues] = useState({
-    email: "",
-    password: "",
-    username: "",
-    surname: "",
-    confirmPassword: "",
-    cpf: "",
-    phone: "",
-  });
+    email: '',
+    password: '',
+    username: '',
+    surname: '',
+    confirmPassword: '',
+    cpf: '',
+    phone: '',
+  })
+
+  const { mutateAsync: handleCreateUser, isPending } = useMutation({
+    mutationKey: [QueryKeys.CREATE_USER],
+    onError: (e) => {
+      setError(digestApiError(e))
+    },
+    mutationFn: async (data: CreateUserDTO) => {
+      return await GaragerApi.createUser(data)
+    },
+    onSuccess: () => {
+      toast.success('Usuário cadastrado com sucesso!', { duration: 4000 })
+      navigate('/login')
+    },
+  })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormValues((prevValues) => ({
       ...prevValues,
       [name]: value,
-    }));
-    if (name === "cpf") {
+    }))
+    if (name === 'cpf') {
       setFormValues((prevValues) => ({
         ...prevValues,
         cpf: maskCPF(value),
-      }));
+      }))
     }
-    if (name === "phone") {
+    if (name === 'phone') {
       setFormValues((prevValues) => ({
         ...prevValues,
         phone: maskPhoneNumber(value),
-      }));
+      }))
     }
-  };
+  }
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const resultError = await handleFormSubmit(
@@ -44,12 +65,12 @@ export const FormRegisterUser: React.FC = () => {
       formValues,
       true,
       false,
-      BASE_URL
-    );
+      handleCreateUser
+    )
     if (resultError) {
-      setError(resultError);
+      setError(resultError)
     }
-  };
+  }
 
   return (
     <div className="flex flex-col justify-center p-8 md:p-14 w-full md:w-1/2">
@@ -58,13 +79,14 @@ export const FormRegisterUser: React.FC = () => {
         Insira seus dados para continuar:
       </span>
       <UserForm
+        isLoading={isPending}
         formValues={formValues}
         onChange={handleChange}
         onSubmit={onSubmit}
-        error={error} // Passe a mensagem de erro
+        error={error}
       />
     </div>
-  );
-};
+  )
+}
 
-export default FormRegisterUser;
+export default FormRegisterUser
