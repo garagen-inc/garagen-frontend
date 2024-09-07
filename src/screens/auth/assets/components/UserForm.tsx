@@ -1,21 +1,23 @@
-import React from "react";
-import FormElement from "./FormElement";
+import React from 'react'
+import FormElement from './FormElement'
 
 interface UserFormProps {
   formValues: {
-    email: string;
-    password: string;
-    username: string;
-    surname: string;
-    confirmPassword: string;
-    cpf: string;
-    phone: string;
-  };
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  error: string | null;
-  showSubmitButton?: boolean;
-  onContinue?: () => void;
+    email: string
+    password: string
+    username: string
+    surname: string
+    confirmPassword: string
+    cpf: string
+    phone: string
+  }
+
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
+  error: string | null
+  showSubmitButton?: boolean
+  onContinue?: () => void
+  update?: boolean
 }
 
 const UserForm: React.FC<UserFormProps> = ({
@@ -25,9 +27,10 @@ const UserForm: React.FC<UserFormProps> = ({
   error,
   showSubmitButton = true,
   onContinue,
+  update = false,
 }) => {
   // Adicionando logs para depuração
-  console.log("UserForm Props:", { formValues, error, showSubmitButton });
+  console.log('UserForm Props:', { formValues, error, showSubmitButton })
 
   return (
     <form className="space-y-4" onSubmit={onSubmit}>
@@ -99,7 +102,7 @@ const UserForm: React.FC<UserFormProps> = ({
           type="submit"
           className="w-full bg-gg-rich-black text-white p-2 rounded-lg mb-6 transition-colors duration-200 ease-in-out hover:bg-gg-lavender-blush hover:text-black hover:border hover:border-gray-300"
         >
-          Registrar
+          {update ? 'Atualizar' : 'Registrar'}
         </button>
       )}
       {!showSubmitButton && onContinue && (
@@ -112,7 +115,7 @@ const UserForm: React.FC<UserFormProps> = ({
         </button>
       )}
     </form>
-  );
-};
+  )
+}
 
-export default UserForm;
+export default UserForm

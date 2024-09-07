@@ -5,6 +5,7 @@ import logo from './shared_assets/logo.png'
 import { navElements } from './shared_assets/constants'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
+import Modal from './ModalUserUpdate'
 const Navbar = () => {
   const { user, logout } = useAuth()
 
@@ -29,6 +30,13 @@ const Navbar = () => {
   //     window.removeEventListener("resize", handleResize);
   //   };
   // }, []);
+  const [isModalOpen, setModalOpen] = useState(false)
+  const handleOpenModal = () => {
+    setModalOpen(true)
+  }
+  const handleCloseModal = () => {
+    setModalOpen(false)
+  }
 
   return (
     <nav className="sticky top-0 z-50 py-3 backdrop-blur-lg border-b bg-gg-sunglow">
@@ -46,6 +54,13 @@ const Navbar = () => {
             ))}
           </ul> */}
           <div className="flex justify-center space-x-12 items-center font-bold">
+            <button
+              onClick={handleOpenModal}
+              className="py-2 px-8 rounded-full bg-gg-lavender-blush hover:text-white hover:bg-gg-rich-black transition duration-200 ease-in-out"
+            >
+              Abrir Modal
+            </button>
+            <Modal open={isModalOpen} onClose={handleCloseModal}></Modal>
             {user ? (
               <p>{user.name}</p>
             ) : (
