@@ -49,7 +49,6 @@ export const handleFormSubmit = async (
     unknown
   >
 ): Promise<string | null> => {
-  // Modificado para retornar o erro
   event.preventDefault()
 
   if (isUserForm) {
@@ -149,7 +148,6 @@ export const handleFormSubmit = async (
         state: state,
       })
 
-      console.log(formValues)
       return null
     } catch (error) {
       return 'Erro ao registrar a empresa.'

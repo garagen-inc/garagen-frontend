@@ -1,12 +1,15 @@
 {
   "name": "garager-frontend",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "homepage": "https://garager-inc.github.io/garager-frontend",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.55.0",
@@ -51,6 +54,7 @@
   "devDependencies": {
     "@types/react-big-calendar": "^1.8.10",
     "autoprefixer": "^10.4.20",
+    "gh-pages": "^6.1.1",
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.9"
   }

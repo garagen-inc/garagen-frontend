@@ -38,7 +38,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setUser(user)
     StorageService.setItem(StorageKeys.ACCESS_TOKEN, receivedToken)
     StorageService.setItem(StorageKeys.USER, user)
-    api.defaults.headers.common['Authorization'] = `Bearer ${receivedToken}`
+    api.defaults.headers['Authorization'] = `Bearer ${receivedToken}`
   }
 
   const logout = () => {
@@ -46,7 +46,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     StorageService.removeItem(StorageKeys.USER)
     setToken(null)
     setUser(null)
-    delete api.defaults.headers.common['Authorization']
+    delete api.defaults.headers['Authorization']
   }
 
   useEffect(() => {

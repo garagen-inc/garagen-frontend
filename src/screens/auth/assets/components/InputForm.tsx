@@ -3,6 +3,7 @@ import React from 'react'
 interface CustomFieldProps {
   span: string
   nameid: string
+  disabled?: boolean
   type?: string
   isRequired: boolean
   onChange?: React.ChangeEventHandler<HTMLInputElement> // Tipo correto para onChange
@@ -12,6 +13,7 @@ interface CustomFieldProps {
 const InputForm: React.FC<CustomFieldProps> = ({
   span = 'Default',
   nameid = 'default',
+  disabled,
   type = 'text',
   isRequired = true,
   onChange,
@@ -25,6 +27,7 @@ const InputForm: React.FC<CustomFieldProps> = ({
         type={type}
         name={nameid}
         id={nameid}
+        disabled={disabled}
         onChange={onChange} // Aplicando o onChange
         value={value} // Aplicando o value
         className="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500"

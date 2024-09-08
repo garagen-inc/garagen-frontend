@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import moment, { Moment } from 'moment'
 import 'moment/locale/pt-br'
 import Navbar from '../shared_components/Navbar'
-import Modal from './assets/Modal'
+import Modal from './components/Modal'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { QueryKeys } from '../../constants/enums'
@@ -11,16 +11,21 @@ import toast from 'react-hot-toast'
 import workshopimg from '../../assets/images/workshop.jpg'
 import { AvailableSlotDTO } from '../../interfaces/availableSlot/available-slot.dto'
 import { useAuth } from '../../contexts/AuthContext'
-import ManageAvailableSlotModal from './assets/ManageAvailableSlotModal'
+import ManageAvailableSlotModal from './components/ManageAvailableSlotModal'
 import { CreateAvailableSlotDTO } from '../../interfaces/availableSlot/create-available-slot.dto'
 import { CreateAppointmentDTO } from '../../interfaces/appointment/create-appointment.dto'
 import { dayMap } from '../shared_components/shared_assets/constants'
 import { digestApiError } from '../../utils/functions'
+import EditWorkshopModal from './components/EditWorkshopModal'
 
 const Workshop: React.FC = () => {
   const { workshopId } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
+
+  const [isOpenManageAvailableSlotsModal, setIsOpenManageAvailableSlotsModal] =
+    useState(false)
+  const [isOpenEditWorkshopModal, setIsOpenEditWorkshopModal] = useState(false)
 
   const availableSlotMutation = useMutation({
     mutationKey: [QueryKeys.AVAILABLE_SLOTS],
@@ -160,9 +165,6 @@ const Workshop: React.FC = () => {
     setSelectedDate(null)
   }
 
-  const [isOpenManageAvailableSlotsModal, setIsOpenManageAvailableSlotsModal] =
-    useState(false)
-
   return (
     <>
       <Navbar />
@@ -178,18 +180,24 @@ const Workshop: React.FC = () => {
 
               <h2 className="text-2xl font-bold mb-4">{workshop.name}</h2>
               <p className="text-lg mb-2">{workshop.description}</p>
-
-              {!isUserOwnerOfThisWorkshop ? (
-                <></>
-              ) : (
-                <>
+              {isUserOwnerOfThisWorkshop && (
+                <div className="flex gap-2 flex-row">
                   <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded mb-2"
-                    onClick={() => setIsOpenManageAvailableSlotsModal(true)}
+                    className="bg-blue-500 text-white px-4 py-2 w-full mw-1/2 rounded mb-2"
+                    onClick={() => setIsOpenEditWorkshopModal(true)}
                   >
-                    Gerenciar Agenda
+                    Editar Informações
                   </button>
-                </>
+
+                  {available_slots?.length === 0 && (
+                    <button
+                      className="bg-green-500 text-white px-4 py-2 w-full rounded mb-2"
+                      onClick={() => setIsOpenManageAvailableSlotsModal(true)}
+                    >
+                      Definir Agenda
+                    </button>
+                  )}
+                </div>
               )}
             </>
           ) : (
@@ -291,8 +299,17 @@ const Workshop: React.FC = () => {
         />
       )}
 
+      {isOpenEditWorkshopModal && workshop && (
+        <EditWorkshopModal
+          workshop={workshop}
+          onClose={() => setIsOpenEditWorkshopModal(false)}
+          onConfirm={() => setIsOpenEditWorkshopModal(false)}
+        />
+      )}
+
       {selectedDate && workshop && (
         <Modal
+          isUserOwnerOfThisWorkshop={isUserOwnerOfThisWorkshop}
           workshop_id={workshop.id}
           isOpen={isModalOpen}
           selectedDate={selectedDate}
