@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { HashRouter, Route, Routes } from 'react-router-dom'
 import { Login } from './screens/auth/Login'
 import { RegisterUser } from './screens/auth/RegisterUser'
 import { RegisterUserWorkshop } from './screens/auth/RegisterUserWorkshop'
@@ -8,29 +8,6 @@ import { AuthProvider } from './contexts/AuthContext'
 import { Toaster } from 'react-hot-toast'
 import Workshop2 from './screens/workshop/Workshop'
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Home />,
-  },
-  {
-    path: '/login',
-    element: <Login />,
-  },
-  {
-    path: '/registeruser',
-    element: <RegisterUser />,
-  },
-  {
-    path: '/registerworkshop',
-    element: <RegisterUserWorkshop />,
-  },
-  {
-    path: '/workshop/:workshopId',
-    element: <Workshop2 />,
-  },
-])
-
 const queryClient = new QueryClient()
 
 function App() {
@@ -38,7 +15,18 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Toaster />
-        <RouterProvider router={router} />
+        <HashRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/registeruser" element={<RegisterUser />} />
+            <Route
+              path="/registerworkshop"
+              element={<RegisterUserWorkshop />}
+            />
+            <Route path="/workshop/:workshopId" element={<Workshop2 />} />
+          </Routes>
+        </HashRouter>
       </AuthProvider>
     </QueryClientProvider>
   )

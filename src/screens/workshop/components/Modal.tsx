@@ -11,6 +11,7 @@ import toast from 'react-hot-toast'
 
 interface ModalProps {
   isOpen: boolean
+  isUserOwnerOfThisWorkshop: boolean | null
   onClose: () => void
   title: string
   selectedDate: string
@@ -24,6 +25,7 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
+  isUserOwnerOfThisWorkshop,
   title,
   availableSlot,
   isLoading,
@@ -148,6 +150,8 @@ const Modal: React.FC<ModalProps> = ({
                     title:
                       a.user_id === user?.id
                         ? 'Agendado por você'
+                        : isUserOwnerOfThisWorkshop
+                        ? `Agendado por ${a.user_name}`
                         : 'Horário indisponível',
                   })),
                 ]}

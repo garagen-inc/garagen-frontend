@@ -14,3 +14,8 @@ export function digestApiError(e: any) {
   }
   return 'Erro desconhecido'
 }
+
+export const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email)
+}

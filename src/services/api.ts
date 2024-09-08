@@ -10,8 +10,14 @@ import { StorageService } from './storage'
 import { StorageKeys } from '../constants/enums'
 import { CreateAppointmentDTO } from '../interfaces/appointment/create-appointment.dto'
 import { AppointmentDTO } from '../interfaces/appointment/appointment.dto'
+import { UpdateWorkshopDTO } from '../interfaces/workshop/update-workshop.dto'
+import { AddressDTO } from '../interfaces/address/address.dto'
+import { UpdateAddressDTO } from '../interfaces/address/update-address.dto'
+import { UpdateUserDTO } from '../interfaces/user/update-user.dto'
+import { MeInfo } from '../interfaces/user/me-info.dto'
 
 export const api = axios.create({
+  // baseURL: 'http://localhost:3001',
   baseURL: 'https://garager-backend.onrender.com',
   headers: {
     'Content-Type': 'application/json',
@@ -34,11 +40,26 @@ export const GaragerApi = {
         .data as DefaultApiResponse<LoginResponseDTO>
     ).data
   },
+  async meInfo(userId: number): Promise<MeInfo> {
+    return (
+      (await api.get(`/users/me-info/${userId}`))
+        .data as DefaultApiResponse<MeInfo>
+    ).data
+  },
   async createUser(data: CreateUserDTO): Promise<UserDTO> {
     return (
       (await api.post('/users/create', data))
         .data as DefaultApiResponse<UserDTO>
     ).data
+  },
+  async updateUser(data: UpdateUserDTO): Promise<LoginResponseDTO> {
+    return (
+      (await api.patch('/users', data))
+        .data as DefaultApiResponse<LoginResponseDTO>
+    ).data
+  },
+  async deleteUser(): Promise<void> {
+    return await api.delete('/users')
   },
   async createAppointment(data: CreateAppointmentDTO): Promise<AppointmentDTO> {
     return (
@@ -56,6 +77,12 @@ export const GaragerApi = {
     return (
       (await api.post('/users/create-workshop-owner', data))
         .data as DefaultApiResponse<UserDTO>
+    ).data
+  },
+  async updateWorkshop(data: UpdateWorkshopDTO): Promise<WorkshopDTO> {
+    return (
+      (await api.patch('/workshop', data))
+        .data as DefaultApiResponse<WorkshopDTO>
     ).data
   },
   async listWorkshops(): Promise<WorkshopDTO[]> {
@@ -83,6 +110,17 @@ export const GaragerApi = {
     return (
       (await api.get(`/available-slot/workshop/${workshopId}`))
         .data as DefaultApiResponse<AvailableSlotDTO[]>
+    ).data
+  },
+  async getAddress(addressId: number): Promise<AddressDTO> {
+    return (
+      (await api.get(`/address/${addressId}`))
+        .data as DefaultApiResponse<AddressDTO>
+    ).data
+  },
+  async updateAddress(data: UpdateAddressDTO): Promise<AddressDTO> {
+    return (
+      (await api.patch('/address', data)).data as DefaultApiResponse<AddressDTO>
     ).data
   },
 }

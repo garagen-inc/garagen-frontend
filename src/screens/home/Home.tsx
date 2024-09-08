@@ -9,8 +9,9 @@ import { GaragerApi } from '../../services/api'
 
 export function Home() {
   const [isHovered, setIsHovered] = useState(false)
+  const [filter, setFilter] = useState('')
 
-  const { data, isLoading } = useQuery({
+  const { data: garages, isLoading } = useQuery({
     initialData: undefined,
     queryKey: [QueryKeys.LIST_WORKSHOPS],
     queryFn: async () => {
@@ -18,14 +19,20 @@ export function Home() {
     },
   })
 
+  const data = !garages
+    ? undefined
+    : garages.filter(
+        (g) =>
+          g.name.toUpperCase().includes(filter.toUpperCase()) ||
+          g.address?.city.toUpperCase().includes(filter.toUpperCase()) ||
+          g.address?.street.toUpperCase().includes(filter.toUpperCase())
+      )
+
   return (
     <>
       <Navbar />
       <div className="bg-gg-lavender-blush">
         <div className="flex my-10  justify-center font-bold items-center flex-col">
-          {/* <span className="text-6xl p-6 text-gg-rich-black">
-            Busque por oficinal
-          </span> */}
           <span className="text-xl text-gg-rich-black">
             Busque por oficinas perto de você!
           </span>
@@ -43,8 +50,10 @@ export function Home() {
                 <img src={glass} className="w-6 h-6" alt="Magnifying Glass" />
               </button>
               <input
+                maxLength={30}
                 type="text"
                 placeholder="Oficina do Thomas"
+                onChange={(e) => setFilter(e.target.value)}
                 className={`search-bar-container flex ${
                   isHovered ? 'hovered' : 'default'
                 } outline-none placeholder-gray-500 p-1 w-5/6 transition-transform duration-300 ease-in-out font-normal`}
@@ -58,6 +67,10 @@ export function Home() {
             data.map((workshop) => (
               <WorkshopElement workshop={workshop} key={workshop.id} />
             ))}
+
+          {data && data.length === 0 && filter && (
+            <h1>Nenhuma oficina com o nome "{filter}".</h1>
+          )}
         </div>
       </div>
     </>
