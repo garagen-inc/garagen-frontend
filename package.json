@@ -9,7 +9,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "yarn build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "docker": "docker-compose down --volumes && docker-compose build --no-cache && docker-compose up"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.55.0",
