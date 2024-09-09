@@ -98,6 +98,7 @@ useEffect(() => {
 O padrão Observer é observado no uso do `useEffect`, que monitora mudanças no token de autenticação armazenado. Sempre que o estado do token no armazenamento é atualizado, o componente `AuthProvider` reage automaticamente a essas alterações, atualizando o estado de autenticação da aplicação de forma dinâmica e automática. Esse comportamento garante que o estado da aplicação esteja sempre sincronizado com o estado de autenticação do usuário.
 
 3. Facade (Estrutural)
+
 O código que implementa o Facade é a combinação do `AuthProvider`, `AuthContext`, e os métodos `login`, `logout`, e `useEffect`.<br>
 Foi utilizada a Context API para compartilhar dados relacionados à autenticação entre os componentes sem a necessidade de passar props manualmente através da árvore de componentes. O `AuthContext` atua como uma interface centralizada, seguindo o princípio do padrão Facade, ao encapsular toda a lógica de autenticação e fornecê-la de forma simplificada aos componentes filhos. Isso facilita a gestão do estado de autenticação de forma eficiente e organizada.
 
