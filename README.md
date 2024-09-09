@@ -1,46 +1,126 @@
-# Getting Started with Create React App
+# Garager Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este é o frontend do aplicativo Garager, o projeto é feito em React com estilização em Tailwind CSS.  
+A branch principal é `main`.
 
-## Available Scripts
+O código principal está dentro de "src".
 
-In the project directory, you can run:
+```
+/src
+```
 
-### `npm start`
+É dividida em 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- /assets<br>
+Composta principalmente de imagens e ícones para uso de outros arquivos.
+- /constants<br>
+Arquivos com constantes para comunicação com backend.
+- /contexts<br>
+Com arquivo para autenticação de usuário.
+- /interfaces<br>
+Com interfaces definidas para objetos da database.
+- /screens<br>
+Com as telas própriamente implementadas.
+- /services<br>
+Para comunicar serviços com o backend.
+- /utils<br>
+Recebimento e tratamento de erro do backend.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+---
 
-### `npm test`
+# Padrões de projeto
+Vamos exemplificar alguns padrões de projeto usados observando o arquivo `AuthContext.tsx` presente em https://github.com/garager-inc/garager-frontend/blob/main/src/contexts/AuthContext.tsx
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. ## Strategy (Comportamental)
+```
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const [token, setToken] = useState<string | null>(null)
+  const [user, setUser] = useState<UserDTO | null>(null)
 
-### `npm run build`
+  const login = (receivedToken: string, user: UserDTO) => {
+    setToken(receivedToken)
+    setUser(user)
+    StorageService.setItem(StorageKeys.ACCESS_TOKEN, receivedToken)
+    StorageService.setItem(StorageKeys.USER, user)
+    api.defaults.headers['Authorization'] = `Bearer ${receivedToken}`
+  }
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+  const logout = () => {
+    StorageService.removeItem(StorageKeys.ACCESS_TOKEN)
+    StorageService.removeItem(StorageKeys.USER)
+    setToken(null)
+    setUser(null)
+    delete api.defaults.headers['Authorization']
+  }
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+  useEffect(() => {
+    const tokenStorage = StorageService.getItem<string>(
+      StorageKeys.ACCESS_TOKEN
+    )
+    if (tokenStorage !== token && tokenStorage) {
+      setToken(tokenStorage)
+      const userStorage = StorageService.getItem<UserDTO>(StorageKeys.USER)
+      if (userStorage) setUser(userStorage)
+    }
+  }, [token])
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+  return (
+    <AuthContext.Provider value={{ user, token, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  )
+}
+```
+O padrão Strategy foi implementado na forma como o componente `AuthProvider` gerencia diferentes estratégias de autenticação, ou seja, as funções login e logout. Essas funções encapsulam comportamentos específicos de autenticação e desautenticação, permitindo alternar entre eles conforme necessário. O sistema determina qual comportamento utilizar com base no estado da autenticação (presença de token e usuário).
 
-### `npm run eject`
+2. ## Observer (Comportamental)
+```
+useEffect(() => {
+    const tokenStorage = StorageService.getItem<string>(
+      StorageKeys.ACCESS_TOKEN
+    )
+    if (tokenStorage !== token && tokenStorage) {
+      setToken(tokenStorage)
+      const userStorage = StorageService.getItem<UserDTO>(StorageKeys.USER)
+      if (userStorage) setUser(userStorage)
+    }
+  }, [token])
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+  return (
+    <AuthContext.Provider value={{ user, token, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  )
+}
+```   
+O padrão Observer é observado no uso do `useEffect`, que monitora mudanças no token de autenticação armazenado. Sempre que o estado do token no armazenamento é atualizado, o componente `AuthProvider` reage automaticamente a essas alterações, atualizando o estado de autenticação da aplicação de forma dinâmica e automática. Esse comportamento garante que o estado da aplicação esteja sempre sincronizado com o estado de autenticação do usuário.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. ## Facade (Estrutural)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+O código que implementa o Facade é a combinação do `AuthProvider`, `AuthContext`, e os métodos `login`, `logout`, e `useEffect`.<br>
+Foi utilizada a Context API para compartilhar dados relacionados à autenticação entre os componentes sem a necessidade de passar props manualmente através da árvore de componentes. O `AuthContext` atua como uma interface centralizada, seguindo o princípio do padrão Facade, ao encapsular toda a lógica de autenticação e fornecê-la de forma simplificada aos componentes filhos. Isso facilita a gestão do estado de autenticação de forma eficiente e organizada.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+---
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+# Clonar o repositório
+```
+git clone https://github.com/garager-inc/garager-frontend
+```
+## Instalar dependências com Yarn
+```
+yarn
+```
+## Rodar o frontend com Yarn
+```
+yarn start
+```
+## Instalar dependências com npm
+```
+npm install
+```
+## Rodar o frontend
+```
+npm start
+```
