@@ -17,8 +17,8 @@ import { UpdateUserDTO } from '../interfaces/user/update-user.dto'
 import { MeInfo } from '../interfaces/user/me-info.dto'
 
 export const api = axios.create({
-  // baseURL: 'http://localhost:3001',
-  baseURL: 'https://garager-backend.onrender.com',
+  baseURL: 'http://localhost:3001',
+  // baseURL: 'https://garager-backend.onrender.com',
   headers: {
     'Content-Type': 'application/json',
     Authorization: StorageService.getItem<string>(StorageKeys.ACCESS_TOKEN)
