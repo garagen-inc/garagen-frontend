@@ -5,32 +5,12 @@ import avatarIcon from '../../assets/icons/avatar.icon.svg'
 import chevronDown from '../../assets/icons/chevron-down.icon.svg'
 import { useState } from 'react'
 import EditUserModal from './components/EditUserModal'
+import ChangePasswordModal from './components/ChangePasswordModal'
 
 const Navbar = () => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
-  // const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-
-  // const toggleNavBar = () => {
-  //   setMobileDrawerOpen(!mobileDrawerOpen);
-  // };
-
-  // const handleResize = () => {
-  //   if (window.innerWidth >= 1024) {
-  //     // Define o breakpoint para desktop (exemplo: 1024px para larguras grandes)
-  //     setMobileDrawerOpen(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   window.addEventListener("resize", handleResize);
-
-  //   // Remove o listener quando o componente for desmontado
-  //   return () => {
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, []);
   const { workshopId } = useParams()
   const isUserOwnerOfThisWorkshop =
     user &&
@@ -39,6 +19,8 @@ const Navbar = () => {
 
   const [isOpenMenu, setIsOpenMenu] = useState(false)
   const [isOpenEditProfileModal, setIsOpenEditProfileModal] = useState(false)
+  const [isOpenChangePasswordModal, setIsOpenChangePasswordModal] =
+    useState(false)
 
   const handleMenuOptions = () => {
     setIsOpenMenu(!isOpenMenu)
@@ -47,6 +29,11 @@ const Navbar = () => {
   const handleOpenEditProfile = () => {
     setIsOpenMenu(false)
     setIsOpenEditProfileModal(true)
+  }
+
+  const handleOpenChangePassword = () => {
+    setIsOpenMenu(false)
+    setIsOpenChangePasswordModal(true)
   }
 
   return (
@@ -99,7 +86,7 @@ const Navbar = () => {
                             </li>
                             <li
                               className="px-4 py-2 hover:bg-gray-100 cursor-pointer font-normal"
-                              onClick={() => alert('TODO')}
+                              onClick={handleOpenChangePassword}
                             >
                               Alterar senha
                             </li>
@@ -146,6 +133,13 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
+      {isOpenChangePasswordModal && user && (
+        <ChangePasswordModal
+          onClose={() => setIsOpenChangePasswordModal(false)}
+          onConfirm={() => setIsOpenChangePasswordModal(false)}
+          user={user}
+        />
+      )}
       {isOpenEditProfileModal && user && (
         <EditUserModal
           onClose={() => setIsOpenEditProfileModal(false)}

@@ -15,9 +15,10 @@ import { AddressDTO } from '../interfaces/address/address.dto'
 import { UpdateAddressDTO } from '../interfaces/address/update-address.dto'
 import { UpdateUserDTO } from '../interfaces/user/update-user.dto'
 import { MeInfo } from '../interfaces/user/me-info.dto'
+import { ChangePasswordUserDTO } from '../interfaces/user/change-password-user.dto'
 
 export const api = axios.create({
-  baseURL: 'http://localhost:3001',
+  baseURL: 'http://localhost:3001', // backend | docker local port
   // baseURL: 'https://garager-backend.onrender.com',
   headers: {
     'Content-Type': 'application/json',
@@ -40,15 +41,15 @@ export const GaragerApi = {
         .data as DefaultApiResponse<LoginResponseDTO>
     ).data
   },
-  async meInfo(userId: number): Promise<MeInfo> {
-    return (
-      (await api.get(`/users/me-info/${userId}`))
-        .data as DefaultApiResponse<MeInfo>
-    ).data
-  },
   async createUser(data: CreateUserDTO): Promise<UserDTO> {
     return (
       (await api.post('/users/create', data))
+        .data as DefaultApiResponse<UserDTO>
+    ).data
+  },
+  async changePassword(data: ChangePasswordUserDTO): Promise<UserDTO> {
+    return (
+      (await api.patch('/users/change-password', data))
         .data as DefaultApiResponse<UserDTO>
     ).data
   },

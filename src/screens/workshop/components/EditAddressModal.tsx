@@ -5,17 +5,17 @@ import { digestApiError } from '../../../utils/functions'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { QueryKeys } from '../../../constants/enums'
 import { GaragerApi } from '../../../services/api'
-import { UpdateWorkshopDTO } from '../../../interfaces/workshop/update-workshop.dto'
-import { WorkshopDTO } from '../../../interfaces/workshop/workshop.dto'
+import { AddressDTO } from '../../../interfaces/address/address.dto'
+import { UpdateAddressDTO } from '../../../interfaces/address/update-address.dto'
 
 interface ModalProps {
-  workshop: WorkshopDTO
+  address: AddressDTO
   onClose: () => void
   onConfirm: () => void
 }
 
-const EditWorkshopModal: React.FC<ModalProps> = ({
-  workshop,
+const EditAddressModal: React.FC<ModalProps> = ({
+  address,
   onClose,
   onConfirm,
 }) => {
@@ -23,8 +23,8 @@ const EditWorkshopModal: React.FC<ModalProps> = ({
 
   const { mutateAsync, isPending: isLoading } = useMutation({
     mutationKey: [QueryKeys.CREATE_WORKSHOP_USER],
-    mutationFn: async (data: UpdateWorkshopDTO) => {
-      return await GaragerApi.updateWorkshop(data)
+    mutationFn: async (data: UpdateAddressDTO) => {
+      return await GaragerApi.updateAddress(data)
     },
     onSuccess: () => {
       toast.success('Oficina atualizada com sucesso!', { duration: 4000 })
@@ -39,8 +39,11 @@ const EditWorkshopModal: React.FC<ModalProps> = ({
 
   const [error, setError] = useState('')
   const [formValues, setFormValues] = useState({
-    companyName: workshop.name,
-    workshop_description: workshop.description,
+    address: address.street,
+    number: address.name,
+    postalCode: address.zip_code,
+    city: address.city,
+    state: address.state,
   })
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,21 +57,22 @@ const EditWorkshopModal: React.FC<ModalProps> = ({
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    const { companyName, workshop_description } = formValues
+    const { address: street, number, postalCode, city, state } = formValues
 
-    if (!companyName || !workshop_description) {
+    if (!street || !number || !postalCode || !city || !state) {
       setError('Por favor, preencha todos os campos da empresa.')
+      return
+    } else {
+      setError('')
     }
 
     await mutateAsync({
-      workshopId: workshop.id,
-      name: companyName,
-      description: workshop_description,
-      // address_name: number,
-      // street: address,
-      // city: city,
-      // zip_code: postalCode,
-      // state: state,
+      addressId: address.id,
+      name: number,
+      street: street,
+      city: city,
+      zip_code: postalCode,
+      state: state,
     })
   }
 
@@ -76,9 +80,9 @@ const EditWorkshopModal: React.FC<ModalProps> = ({
     <>
       <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 ">
         <div className="bg-white p-6 rounded-lg shadow-lg w-auto sm:overflow-auto xl:overflow-hidden xl:h-auto">
-          <h2 className="text-xl font-bold mb-4">Editar informações</h2>
+          <h2 className="text-xl font-bold mb-4">Editar endereço</h2>
           <p className="text-sm font-normal mb-4">
-            Altere informações da sua oficina!
+            Altere informações do endereço da sua oficina!
           </p>
 
           <div className="my-4 gap-4 flex flex-row xl:flex-row sm:flex-col">
@@ -88,23 +92,8 @@ const EditWorkshopModal: React.FC<ModalProps> = ({
                   {error}
                 </div>
               )}
-              <InputForm
-                isRequired={true}
-                nameid="companyName"
-                span="Nome da Oficina"
-                type="text"
-                value={formValues.companyName}
-                onChange={onChange}
-              />
-              <InputForm
-                isRequired={true}
-                nameid="workshop_description"
-                span="Descrição da Oficina"
-                type="text"
-                value={formValues.workshop_description}
-                onChange={onChange}
-              />
-              {/* <div className="flex flex-row gap-4">
+
+              <div className="flex flex-row gap-4">
                 <InputForm
                   isRequired={true}
                   nameid="address"
@@ -147,7 +136,7 @@ const EditWorkshopModal: React.FC<ModalProps> = ({
                 type="text"
                 value={formValues.postalCode}
                 onChange={onChange}
-              /> */}
+              />
               <div className="flex justify-end gap-2">
                 <button
                   onClick={onClose}
@@ -159,13 +148,19 @@ const EditWorkshopModal: React.FC<ModalProps> = ({
                   type="submit"
                   disabled={
                     isLoading ||
-                    !formValues.companyName ||
-                    !formValues.workshop_description
+                    !formValues.address ||
+                    !formValues.number ||
+                    !formValues.postalCode ||
+                    !formValues.city ||
+                    !formValues.state
                   }
                   className={`px-4 py-2 rounded ${
                     !isLoading &&
-                    formValues.companyName &&
-                    formValues.workshop_description
+                    formValues.address &&
+                    formValues.number &&
+                    formValues.postalCode &&
+                    formValues.city &&
+                    formValues.state
                       ? 'bg-blue-500 text-white'
                       : 'bg-gray-300'
                   }`}
@@ -181,4 +176,4 @@ const EditWorkshopModal: React.FC<ModalProps> = ({
   )
 }
 
-export default EditWorkshopModal
+export default EditAddressModal

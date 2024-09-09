@@ -17,6 +17,7 @@ import { CreateAppointmentDTO } from '../../interfaces/appointment/create-appoin
 import { dayMap } from '../shared_components/shared_assets/constants'
 import { digestApiError } from '../../utils/functions'
 import EditWorkshopModal from './components/EditWorkshopModal'
+import EditAddressModal from './components/EditAddressModal'
 
 const Workshop: React.FC = () => {
   const { workshopId } = useParams()
@@ -26,6 +27,7 @@ const Workshop: React.FC = () => {
   const [isOpenManageAvailableSlotsModal, setIsOpenManageAvailableSlotsModal] =
     useState(false)
   const [isOpenEditWorkshopModal, setIsOpenEditWorkshopModal] = useState(false)
+  const [isOpenEditAddressModal, setIsOpenEditAddressModal] = useState(false)
 
   const availableSlotMutation = useMutation({
     mutationKey: [QueryKeys.AVAILABLE_SLOTS],
@@ -180,23 +182,43 @@ const Workshop: React.FC = () => {
 
               <h2 className="text-2xl font-bold mb-4">{workshop.name}</h2>
               <p className="text-lg mb-2">{workshop.description}</p>
+              {workshop.address && (
+                <div className=" mt-4">
+                  <h2 className="text-xl font-normal">Endereço:</h2>
+                  <p className="text-md">
+                    {workshop.address.street} {workshop.address.name} -{' '}
+                    {workshop.address.zip_code}
+                  </p>
+                  <p className="text-md mb-2">
+                    {workshop.address.city} - {workshop.address.state}
+                  </p>
+                </div>
+              )}
               {isUserOwnerOfThisWorkshop && (
-                <div className="flex gap-2 flex-row">
+                <div>
+                  <div className="flex gap-2 flex-row">
+                    <button
+                      className="bg-blue-500 text-white px-4 py-2 w-full mw-1/2 rounded mb-2"
+                      onClick={() => setIsOpenEditWorkshopModal(true)}
+                    >
+                      Editar Oficina
+                    </button>
+
+                    {available_slots?.length === 0 && (
+                      <button
+                        className="bg-green-500 text-white px-4 py-2 w-full rounded mb-2"
+                        onClick={() => setIsOpenManageAvailableSlotsModal(true)}
+                      >
+                        Definir Agenda
+                      </button>
+                    )}
+                  </div>
                   <button
                     className="bg-blue-500 text-white px-4 py-2 w-full mw-1/2 rounded mb-2"
-                    onClick={() => setIsOpenEditWorkshopModal(true)}
+                    onClick={() => setIsOpenEditAddressModal(true)}
                   >
-                    Editar Informações
+                    Editar Endereço
                   </button>
-
-                  {available_slots?.length === 0 && (
-                    <button
-                      className="bg-green-500 text-white px-4 py-2 w-full rounded mb-2"
-                      onClick={() => setIsOpenManageAvailableSlotsModal(true)}
-                    >
-                      Definir Agenda
-                    </button>
-                  )}
                 </div>
               )}
             </>
@@ -304,6 +326,14 @@ const Workshop: React.FC = () => {
           workshop={workshop}
           onClose={() => setIsOpenEditWorkshopModal(false)}
           onConfirm={() => setIsOpenEditWorkshopModal(false)}
+        />
+      )}
+
+      {isOpenEditAddressModal && workshop && workshop.address && (
+        <EditAddressModal
+          address={workshop.address}
+          onClose={() => setIsOpenEditAddressModal(false)}
+          onConfirm={() => setIsOpenEditAddressModal(false)}
         />
       )}
 
