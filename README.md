@@ -31,7 +31,7 @@ Recebimento e tratamento de erro do backend.
 # Padrões de projeto
 Vamos exemplificar alguns padrões de projeto usados observando o arquivo `AuthContext.tsx` presente em https://github.com/garager-inc/garager-frontend/blob/main/src/contexts/AuthContext.tsx
 
-1. Strategy (Comportamental)
+1. ## Strategy (Comportamental)
 ```
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
@@ -75,7 +75,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 ```
 O padrão Strategy foi implementado na forma como o componente `AuthProvider` gerencia diferentes estratégias de autenticação, ou seja, as funções login e logout. Essas funções encapsulam comportamentos específicos de autenticação e desautenticação, permitindo alternar entre eles conforme necessário. O sistema determina qual comportamento utilizar com base no estado da autenticação (presença de token e usuário).
 
-2. Observer (Comportamental)
+2. ## Observer (Comportamental)
 ```
 useEffect(() => {
     const tokenStorage = StorageService.getItem<string>(
@@ -97,7 +97,7 @@ useEffect(() => {
 ```   
 O padrão Observer é observado no uso do `useEffect`, que monitora mudanças no token de autenticação armazenado. Sempre que o estado do token no armazenamento é atualizado, o componente `AuthProvider` reage automaticamente a essas alterações, atualizando o estado de autenticação da aplicação de forma dinâmica e automática. Esse comportamento garante que o estado da aplicação esteja sempre sincronizado com o estado de autenticação do usuário.
 
-3. Facade (Estrutural)
+3. ## Facade (Estrutural)
 
 O código que implementa o Facade é a combinação do `AuthProvider`, `AuthContext`, e os métodos `login`, `logout`, e `useEffect`.<br>
 Foi utilizada a Context API para compartilhar dados relacionados à autenticação entre os componentes sem a necessidade de passar props manualmente através da árvore de componentes. O `AuthContext` atua como uma interface centralizada, seguindo o princípio do padrão Facade, ao encapsular toda a lógica de autenticação e fornecê-la de forma simplificada aos componentes filhos. Isso facilita a gestão do estado de autenticação de forma eficiente e organizada.
