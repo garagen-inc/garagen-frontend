@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import InputForm from '../../auth/assets/components/InputForm'
 import toast from 'react-hot-toast'
-import { digestApiError, validateEmail } from '../../../utils/functions'
+import { digestApiError } from '../../../utils/functions'
 import { useMutation } from '@tanstack/react-query'
 import { QueryKeys } from '../../../constants/enums'
 import { GaragerApi } from '../../../services/api'
 import { UserDTO } from '../../../interfaces/user/user.dto'
-import validateCPF from '../../auth/assets/functions/validatorCPF'
 import { maskCPF, maskPhoneNumber } from '../../auth/assets/functions/masks'
 import { ChangePasswordUserDTO } from '../../../interfaces/user/change-password-user.dto'
 

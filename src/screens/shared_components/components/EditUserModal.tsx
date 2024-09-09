@@ -10,6 +10,7 @@ import validateCPF from '../../auth/assets/functions/validatorCPF'
 import { UpdateUserDTO } from '../../../interfaces/user/update-user.dto'
 import { useAuth } from '../../../contexts/AuthContext'
 import { maskCPF, maskPhoneNumber } from '../../auth/assets/functions/masks'
+import { useNavigate } from 'react-router-dom'
 
 interface ModalProps {
   user: UserDTO
@@ -20,6 +21,7 @@ interface ModalProps {
 const EditUserModal: React.FC<ModalProps> = ({ user, onClose, onConfirm }) => {
   const queryClient = useQueryClient()
   const { login, logout } = useAuth()
+  const navigate = useNavigate()
 
   const deleteAccountMutation = useMutation({
     mutationKey: [QueryKeys.DELETE_ACCOUNT],
@@ -28,12 +30,21 @@ const EditUserModal: React.FC<ModalProps> = ({ user, onClose, onConfirm }) => {
     },
     onSuccess: async () => {
       if (!user) return
-      queryClient.invalidateQueries({
-        queryKey: [QueryKeys.LOGIN, QueryKeys.USER],
+      await queryClient.invalidateQueries({
+        queryKey: [
+          QueryKeys.LOGIN,
+          QueryKeys.USER,
+          QueryKeys.APPOINTMENT,
+          QueryKeys.AVAILABLE_SLOTS,
+          QueryKeys.WORKSHOP,
+          QueryKeys.LIST_WORKSHOPS,
+          QueryKeys.LIST_APPOINTMENT,
+        ],
       })
 
       logout()
       toast.success('Sua conta foi excluída com segurança!', { duration: 4000 })
+      navigate('/')
       onConfirm()
     },
     onError: (error) => {

@@ -14,7 +14,6 @@ import { UpdateWorkshopDTO } from '../interfaces/workshop/update-workshop.dto'
 import { AddressDTO } from '../interfaces/address/address.dto'
 import { UpdateAddressDTO } from '../interfaces/address/update-address.dto'
 import { UpdateUserDTO } from '../interfaces/user/update-user.dto'
-import { MeInfo } from '../interfaces/user/me-info.dto'
 import { ChangePasswordUserDTO } from '../interfaces/user/change-password-user.dto'
 
 export const api = axios.create({

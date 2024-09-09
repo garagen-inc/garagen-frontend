@@ -39,8 +39,8 @@ const Navbar = () => {
   return (
     <>
       <nav className="sticky top-0 z-50 py-3 backdrop-blur-lg border-b bg-gg-sunglow ">
-        <div className="container mx-auto relative text-sm">
-          <div className="flex justify-between items-center">
+        <div className="container relative text-sm">
+          <div className="flex justify-between items-center mx-8">
             <div
               className="flex items-center flex-shrink-0 cursor-pointer"
               onClick={() => navigate('/')}

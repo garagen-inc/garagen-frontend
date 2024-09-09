@@ -38,4 +38,5 @@ export class StorageService {
   }
 }
 
+// eslint-disable-next-line
 export default new StorageService()
